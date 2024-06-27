@@ -30,6 +30,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("/profiles")
 @Api(tags = "Profile Management", description = "Endpoints for managing profiles")
 public class ProfileController {
+//Comment
 
     @Autowired
     private ProfileService profileService;
