@@ -6,11 +6,11 @@ import com.staffing.jobportal.models.User;
 
 public interface UserService {
 	    
-		public User addUser(User user) ;
+		public String addUser(User user) ;
 	    
-	    public void deleteUser(Long userId) ;
+	    public boolean deleteUser(String userId) ;
 	    
-	    public User verifyUser(String username);
+	    public User verifyUser(String emailId, String password);
 	    
 	    public List<User> getAllUsers();
 }

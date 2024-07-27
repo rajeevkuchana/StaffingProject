@@ -2,8 +2,14 @@ package com.staffing.jobportal.models;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 //Profile.java
+@Document(collection = "profile_details")
 public class ProfileDetails {
+	
+	
+	//private String id;
 	private String profileId;
 	private String firstName;
 	private String lastName;
@@ -11,6 +17,11 @@ public class ProfileDetails {
 	private String phone;
 	private String location;
 	private String profilePic;
+	private String currentCompany;
+	private String designation;
+	private String expectedCTC;
+	private String category;
+	private String jobProfile;
 	private double rating1;
 	private double rating2;
 	private double rating3;
@@ -25,7 +36,7 @@ public class ProfileDetails {
 	private String interviewBy;
 	private LocalDateTime interviewDateTime;
 	private String managedBy;
-	private ProfileStatus status;
+	private String status;
 	private String selectedBy;
 	private LocalDateTime selectedDateTime;
 
@@ -34,10 +45,54 @@ public class ProfileDetails {
 	// toString method
 	// Other methods as needed
 
-	public enum ProfileStatus {
-		UPLOADED, SCREENED, PENDING_INTERVIEW, INTERVIEWED, SELECTED, RECRUITED, REJECTED
+	
+	public String getStatus() {
+		return status;
 	}
 
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getCurrentCompany() {
+		return currentCompany;
+	}
+
+	public void setCurrentCompany(String currentCompany) {
+		this.currentCompany = currentCompany;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
+
+	public String getExpectedCTC() {
+		return expectedCTC;
+	}
+
+	public void setExpectedCTC(String expectedCTC) {
+		this.expectedCTC = expectedCTC;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getJobProfile() {
+		return jobProfile;
+	}
+
+	public void setJobProfile(String jobProfile) {
+		this.jobProfile = jobProfile;
+	}
+	
 	public String getProfileId() {
 		return profileId;
 	}
@@ -204,14 +259,6 @@ public class ProfileDetails {
 
 	public void setManagedBy(String managedBy) {
 		this.managedBy = managedBy;
-	}
-
-	public ProfileStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(ProfileStatus status) {
-		this.status = status;
 	}
 
 	public String getSelectedBy() {

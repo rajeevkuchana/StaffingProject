@@ -3,7 +3,6 @@ package com.staffing.jobportal.models;
 
 public class BasicDetails {
 	
-
 	private String basicD1;
 	
 	private String basicD2;

@@ -1,34 +1,32 @@
 package com.staffing.jobportal.serviceImpl;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.staffing.jobportal.models.ProfileDetails;
-import com.staffing.jobportal.models.ProfileDetails.ProfileStatus;
 import com.staffing.jobportal.models.ProfileSummary;
+import com.staffing.jobportal.repo.ProfileDetailsRepo;
 import com.staffing.jobportal.service.ProfileService;
 
 @Service
 public class ProfileServiceImpl implements ProfileService {
 
-	private List<ProfileDetails> profiles = new ArrayList<>();
+	// private List<ProfileDetails> profiles = new ArrayList<>();
+	@Autowired
+	private ProfileDetailsRepo profileDetailsRepo;
 
+	@Override
 	public List<ProfileSummary> getAllProfiles() {
-//        if ("Client".equalsIgnoreCase(role)) {
-//            return profiles.stream()
-//                    .filter(profile -> profile.getStatus() == status)
-//                    .collect(Collectors.toList());
-//        } else if ("Interviewer".equalsIgnoreCase(role)) {
-//            return profiles.stream()
-//                    .filter(profile -> profile.getInterviewBy().equalsIgnoreCase(createdBy))
-//                    .collect(Collectors.toList());
-//        }
+
+		List<ProfileDetails> profiles = profileDetailsRepo.findAll();
+
 		List<ProfileSummary> profileSummaryList = new ArrayList<>();
 		try {
 			Iterator<ProfileDetails> itr = profiles.iterator();
@@ -47,7 +45,6 @@ public class ProfileServiceImpl implements ProfileService {
 				profilSummary.setInterviewDateTime(profileDetails.getInterviewDateTime());
 				profilSummary.setManagedBy(profileDetails.getManagedBy());
 				profileSummaryList.add(profilSummary);
-
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,55 +52,93 @@ public class ProfileServiceImpl implements ProfileService {
 		return profileSummaryList; // Return empty list if role is neither Client nor Interviewer
 	}
 
-	public ProfileDetails getProfileById(String id) {
-		return profiles.stream().filter(profile -> profile.getProfileId().equals(id)).findFirst().orElse(null);
-	}
-
-	public List<ProfileDetails> getProfilesClientSelected(ProfileStatus status) {
-		return profiles.stream().filter(profile -> profile.getStatus() == status).collect(Collectors.toList());
-	}
-
-	public ProfileDetails addProfile(ProfileDetails profile) {
-		// Generate ID (in a real application, this should be handled by database
-		// auto-increment)
+	@Override
+	public ProfileDetails getProfileByProfileId(String profileId) {
+		ProfileDetails profile = null;
 		try {
-			profile.setProfileId(UUID.randomUUID()+"");
-			profiles.add(profile);
+			profile = profileDetailsRepo.findByProfileId(profileId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return profile;
 	}
 
-	public void deleteProfile(String id) {
-		profiles.removeIf(profile -> profile.getProfileId().equals(id));
+	@Override
+	public List<ProfileDetails> getProfilesClientSelected(String selectedBy) {
+		List<ProfileDetails> profilesList = new ArrayList<ProfileDetails>();
+		try {
+			profilesList = profileDetailsRepo.findAllBySelectedBy(selectedBy);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return profilesList;
 	}
 
-	public ProfileDetails editProfile(Long id, ProfileDetails updatedProfile) {
-		ProfileDetails profile = profiles.stream().filter(p -> p.getProfileId().equals(id)).findFirst().orElse(null);
+	@Override
+	public ProfileDetails addProfile(ProfileDetails profile) {
 
-		if (profile != null) {
-			// Update profile fields as needed
-			profile.setFirstName(updatedProfile.getFirstName());
-			profile.setLastName(updatedProfile.getLastName());
-			// Update other fields similarly
+		try {
+			profile.setProfileId(UUID.randomUUID() + "");
+
+			DoubleStream doubleStream = DoubleStream.of(50.8, 35.7, 49.5, 12.7, 89.7, 97.4);
+			OptionalDouble res = doubleStream.average();
+			profile.setOverAllRating(res.getAsDouble());
+
+			profileDetailsRepo.save(profile);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
 		return profile;
 	}
 
-	public ProfileDetails selectProfile(Long id, String selectedBy) {
-		ProfileDetails profile = profiles.stream().filter(p -> p.getProfileId().equals(id)).findFirst().orElse(null);
+	@Override
+	public boolean deleteProfile(String profileId) {
+		boolean deleteStatus = false;
+		Long deleteStatusL = 0L;
+		try {
+			deleteStatusL = profileDetailsRepo.deleteByProfileId(profileId);
+			if (!deleteStatusL.equals(0)) {
+				deleteStatus = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return deleteStatus;
+	}
 
-		if (profile != null) {
-			profile.setStatus(ProfileStatus.SELECTED);
+	@Override
+	public boolean editProfile(String profileId, ProfileDetails updatedProfile) {
+		boolean editStatus = false;
+		Long deleteStatus = 0L;
+		try {
+			deleteStatus = profileDetailsRepo.deleteByProfileId(profileId);
+			if (!deleteStatus.equals(0)) {
+				updatedProfile.setProfileId(profileId);
+				ProfileDetails profileDetails = profileDetailsRepo.save(updatedProfile);
+				if (null != profileDetails) {
+					editStatus = true;
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return editStatus;
+	}
+
+	@Override
+	public boolean selectProfile(String profileId, String selectedBy) {
+		boolean selectStatus = false;
+		ProfileDetails profile = null;
+		try {
+			profile = profileDetailsRepo.findByProfileId(profileId);
 			profile.setSelectedBy(selectedBy);
-			profile.setSelectedDateTime(LocalDateTime.now());
+			profileDetailsRepo.save(profile);
+			selectStatus = true;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-		return profile;
+		return selectStatus;
 	}
-
-	// Other methods as needed
 
 }

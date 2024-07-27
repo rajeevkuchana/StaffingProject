@@ -1,15 +1,19 @@
 package com.staffing.jobportal.models;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 //User.java
+@Document(collection = "users")
 public class User {
 
-	private Long id;
+	private String id;
 	private String username;
 	private String email;
 	private String role;
 	private String password;
+	private String company;
 
-	public User(Long id, String username, String email, String role, String password) {
+	public User(String id, String username, String email, String role, String password) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -18,11 +22,19 @@ public class User {
 		this.password = password;
 	}
 
-	public Long getId() {
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

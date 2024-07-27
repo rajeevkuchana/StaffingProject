@@ -2,49 +2,82 @@ package com.staffing.jobportal.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.staffing.jobportal.models.User;
+import com.staffing.jobportal.repo.UserRepo;
 import com.staffing.jobportal.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
-    
-    private List<User> users = new ArrayList<>();
-    
-    public User addUser(User user) {
-        // Perform validation if needed
-        
-        // Assign an ID (you might want to use a better ID generation strategy)
-        user.setId((long) (users.size() + 1));
-        
-        // Save user to list (or database if using a repository)
-        users.add(user);
-        
-        return user;
-    }
-    
-    public void deleteUser(Long userId) {
-        users.removeIf(user -> user.getId().equals(userId));
-    }
-    
-    public User verifyUser(String username) {
-        // Dummy verification, replace with actual logic
-    	
-    	  Optional<User> userOptional = users.stream()
-                  .filter(user -> user.getUsername().equals(username))
-                  .findFirst();
-    	
-        return userOptional.get();
-    }
+
+	@Autowired
+	private UserRepo userRepository;
+
+	public String addUser(User user) {
+		
+		String createStatus = "";
+		User userAlready = null;
+		try {
+			userAlready = userRepository.findByEmail(user.getEmail());
+			if(null != userAlready) {
+				user.setId(UUID.randomUUID() + "");
+				userRepository.save(user);
+				createStatus = "Created";
+			}else {
+				createStatus = "User Already Exist";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return createStatus;
+
+	}
+
+	public boolean deleteUser(String userId) {
+		
+		boolean deleteStatus = false;
+		try {
+			userRepository.deleteById(userId);
+			deleteStatus = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return deleteStatus;
+
+	}
+
+	public User verifyUser(String emailId, String password) {
+		
+		User user = null;
+		try {
+			user = userRepository.findByEmail(emailId);
+			if (!user.getPassword().equals(password)) {
+				user = null;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return user;
+
+	}
 
 	@Override
 	public List<User> getAllUsers() {
-		// TODO Auto-generated method stub
-		return users;
+		
+
+		List<User> userList = new ArrayList<User>();
+		try {
+			userList = userRepository.findAll();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return userList;
 	}
-    
-    // Add other service methods as needed
+
+	// Add other service methods as needed
 }
