@@ -1,6 +1,7 @@
 package com.staffing.jobportal.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,16 +13,20 @@ public class ProfileDetails {
 	//private String id;
 	private String profileId;
 	private String firstName;
+	private String gender;
 	private String lastName;
 	private String email;
 	private String phone;
 	private String location;
 	private String profilePic;
 	private String currentCompany;
-	private String designation;
 	private String expectedCTC;
-	private String category;
-	private String jobProfile;
+	private String currentCTC;
+	private String overallExp;
+	private String relevantExp;
+	private String designation;
+	private List<String> jobProfile;
+	private String jobCategory;
 	private double rating1;
 	private double rating2;
 	private double rating3;
@@ -48,6 +53,38 @@ public class ProfileDetails {
 	
 	public String getStatus() {
 		return status;
+	}
+
+	public String getCurrentCTC() {
+		return currentCTC;
+	}
+
+	public void setCurrentCTC(String currentCTC) {
+		this.currentCTC = currentCTC;
+	}
+
+	public String getOverallExp() {
+		return overallExp;
+	}
+
+	public void setOverallExp(String overallExp) {
+		this.overallExp = overallExp;
+	}
+
+	public String getRelevantExp() {
+		return relevantExp;
+	}
+
+	public void setRelevantExp(String relevantExp) {
+		this.relevantExp = relevantExp;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
 	public void setStatus(String status) {
@@ -77,22 +114,6 @@ public class ProfileDetails {
 		this.expectedCTC = expectedCTC;
 	}
 
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
-
-	public String getJobProfile() {
-		return jobProfile;
-	}
-
-	public void setJobProfile(String jobProfile) {
-		this.jobProfile = jobProfile;
-	}
-	
 	public String getProfileId() {
 		return profileId;
 	}
@@ -277,6 +298,22 @@ public class ProfileDetails {
 		this.selectedDateTime = selectedDateTime;
 	}
 
+	public List<String> getJobProfile() {
+		return jobProfile;
+	}
+
+	public void setJobProfile(List<String> jobProfile) {
+		this.jobProfile = jobProfile;
+	}
+
+	public String getJobCategory() {
+		return jobCategory;
+	}
+
+	public void setJobCategory(String jobCategory) {
+		this.jobCategory = jobCategory;
+	}
+
 }
 
-//ProfileStatus.java (Enum for profile status)
+

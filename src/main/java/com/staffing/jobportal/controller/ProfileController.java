@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.staffing.jobportal.models.JobSearchSummary;
 import com.staffing.jobportal.models.ProfileDetails;
 import com.staffing.jobportal.models.ProfileSummary;
+import com.staffing.jobportal.models.SearchJob;
 import com.staffing.jobportal.service.ProfileService;
 
 import io.swagger.annotations.Api;
@@ -38,16 +40,19 @@ public class ProfileController {
 	@Autowired
 	private ProfileService profileService;
 
-	@GetMapping("")
+	@PostMapping("")
 	@ApiOperation("Get all profiles based on role and status")
-	public List<ProfileSummary> getAllProfiles(
+	public JobSearchSummary getAllProfiles(
 			//@ApiParam(value = "email", required = true) @RequestParam(value = "email") String email
 //            @ApiParam(value = "Role (Client or Interviewer)", required = true) @RequestParam(value = "role") String role,
 //            @ApiParam(value = "Created by (for Interviewer role)", required = false) @RequestParam(value = "createdBy", required = false) String createdBy,
 //            @ApiParam(value = "Status", required = true, allowableValues = "UPLOADED, SCREENED, PENDING_INTERVIEW, INTERVIEWED, SELECTED, RECRUITED, REJECTED")
+			@ApiParam(value = "Profile object to be added", required = true) @RequestBody SearchJob searchJob
 //            @RequestParam(value = "status") ProfileStatus status
 	) {
-		return profileService.getAllProfiles();
+		JobSearchSummary jobSearchSummary = profileService.getAllProfiles(searchJob);
+		
+		return jobSearchSummary ;
 	}
 
 	@PostMapping("/add")

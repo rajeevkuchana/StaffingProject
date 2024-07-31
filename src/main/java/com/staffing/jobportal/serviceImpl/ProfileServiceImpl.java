@@ -7,28 +7,50 @@ import java.util.OptionalDouble;
 import java.util.UUID;
 import java.util.stream.DoubleStream;
 
+import org.bson.json.JsonParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.staffing.jobportal.models.JobSearchSummary;
 import com.staffing.jobportal.models.ProfileDetails;
 import com.staffing.jobportal.models.ProfileSummary;
+import com.staffing.jobportal.models.SearchJob;
+import com.staffing.jobportal.models.User;
 import com.staffing.jobportal.repo.ProfileDetailsRepo;
+import com.staffing.jobportal.repo.UserRepo;
 import com.staffing.jobportal.service.ProfileService;
 
 @Service
 public class ProfileServiceImpl implements ProfileService {
 
+	@Autowired
+	private UserRepo userRepository;
 	// private List<ProfileDetails> profiles = new ArrayList<>();
 	@Autowired
 	private ProfileDetailsRepo profileDetailsRepo;
 
 	@Override
-	public List<ProfileSummary> getAllProfiles() {
+	public JobSearchSummary getAllProfiles(SearchJob searchJob) {
 
-		List<ProfileDetails> profiles = profileDetailsRepo.findAll();
-
+		JobSearchSummary jobSearchSummary = new JobSearchSummary();
 		List<ProfileSummary> profileSummaryList = new ArrayList<>();
+		List<ProfileDetails> profiles = null;
+		String email = searchJob.getEmail();
+		User user = null;
+		String company = null;
+		
 		try {
+			
+			user = userRepository.findByEmail(email);
+			company = user.getCompany();
+			if (null != searchJob.getJobProfile() && searchJob.getJobProfile().size() > 0) {
+
+				profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(),
+						searchJob.getJobProfile(), company);
+			} else {
+				profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), company);
+			}
+
 			Iterator<ProfileDetails> itr = profiles.iterator();
 			while (itr.hasNext()) {
 				ProfileDetails profileDetails = itr.next();
@@ -36,20 +58,25 @@ public class ProfileServiceImpl implements ProfileService {
 				profilSummary.setProfileId(profileDetails.getProfileId());
 				profilSummary.setFirstName(profileDetails.getFirstName());
 				profilSummary.setLastName(profileDetails.getLastName());
-				profilSummary.setEmail(profileDetails.getEmail());
-				profilSummary.setPhone(profileDetails.getPhone());
+				profilSummary.setCurrentCompany(profileDetails.getCurrentCompany());
+				profilSummary.setDesignation(profileDetails.getDesignation());
 				profilSummary.setLocation(profileDetails.getLocation());
-				profilSummary.setProfilePic(profileDetails.getProfilePic());
+				profilSummary.setCurrentCTC(profileDetails.getCurrentCTC());
+				profilSummary.setExpectedCTC(profileDetails.getExpectedCTC());
+				profilSummary.setOverallExp(profileDetails.getOverallExp());
+				profilSummary.setRelevantExp(profileDetails.getRelevantExp());
 				profilSummary.setOverAllRating(profileDetails.getOverAllRating());
-				profilSummary.setInterviewBy(profileDetails.getInterviewBy());
-				profilSummary.setInterviewDateTime(profileDetails.getInterviewDateTime());
-				profilSummary.setManagedBy(profileDetails.getManagedBy());
+				
 				profileSummaryList.add(profilSummary);
 			}
+			
+			jobSearchSummary.setProfileList(profileSummaryList);
+		} catch (JsonParseException jsonException) {
+			jsonException.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return profileSummaryList; // Return empty list if role is neither Client nor Interviewer
+		return jobSearchSummary; 
 	}
 
 	@Override
@@ -79,8 +106,8 @@ public class ProfileServiceImpl implements ProfileService {
 
 		try {
 			profile.setProfileId(UUID.randomUUID() + "");
-
-			DoubleStream doubleStream = DoubleStream.of(50.8, 35.7, 49.5, 12.7, 89.7, 97.4);
+			DoubleStream doubleStream = DoubleStream.of(profile.getRating1(), profile.getRating2(),
+					profile.getRating3(), profile.getRating4(), profile.getRating5());
 			OptionalDouble res = doubleStream.average();
 			profile.setOverAllRating(res.getAsDouble());
 

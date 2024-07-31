@@ -2,12 +2,13 @@ package com.staffing.jobportal.service;
 
 import java.util.List;
 
+import com.staffing.jobportal.models.JobSearchSummary;
 import com.staffing.jobportal.models.ProfileDetails;
-import com.staffing.jobportal.models.ProfileSummary;
+import com.staffing.jobportal.models.SearchJob;
 
 public interface ProfileService {
 
-	public List<ProfileSummary> getAllProfiles() ;
+	public JobSearchSummary getAllProfiles(SearchJob searchJob) ;
 
 	public ProfileDetails getProfileByProfileId(String id);
 

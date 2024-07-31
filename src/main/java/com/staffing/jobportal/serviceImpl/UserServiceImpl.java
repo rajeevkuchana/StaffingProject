@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 		User userAlready = null;
 		try {
 			userAlready = userRepository.findByEmail(user.getEmail());
-			if(null != userAlready) {
+			if(null == userAlready) {
 				user.setId(UUID.randomUUID() + "");
 				userRepository.save(user);
 				createStatus = "Created";
@@ -54,11 +54,8 @@ public class UserServiceImpl implements UserService {
 		
 		User user = null;
 		try {
-			user = userRepository.findByEmail(emailId);
-			if (!user.getPassword().equals(password)) {
-				user = null;
-			}
-
+			user = userRepository.findByEmail(emailId, password);
+	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

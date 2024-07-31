@@ -1,24 +1,67 @@
 package com.staffing.jobportal.models;
 
-import java.time.LocalDateTime;
-
 //Profile.java
 public class ProfileSummary {
+	
 	private String profileId;
 	private String firstName;
 	private String lastName;
-	private String email;
-	private String phone;
+	private String currentCompany;
+	private String designation;
 	private String location;
 	private String profilePic;
+	private String currentCTC;
+	private String expectedCTC;
+	private String overallExp;
+	private String relevantExp;
 	private double overAllRating;
 
-	private String interviewBy;
-	private LocalDateTime interviewDateTime;
-	private String managedBy;
+	public String getExpectedCTC() {
+		return expectedCTC;
+	}
 
-	public enum ProfileStatus {
-		UPLOADED, SCREENED, PENDING_INTERVIEW, INTERVIEWED, SELECTED, RECRUITED, REJECTED
+	public void setExpectedCTC(String expectedCTC) {
+		this.expectedCTC = expectedCTC;
+	}
+
+	public String getCurrentCompany() {
+		return currentCompany;
+	}
+
+	public void setCurrentCompany(String currentCompany) {
+		this.currentCompany = currentCompany;
+	}
+
+	public String getCurrentCTC() {
+		return currentCTC;
+	}
+
+	public void setCurrentCTC(String currentCTC) {
+		this.currentCTC = currentCTC;
+	}
+
+	public String getOverallExp() {
+		return overallExp;
+	}
+
+	public void setOverallExp(String overallExp) {
+		this.overallExp = overallExp;
+	}
+
+	public String getRelevantExp() {
+		return relevantExp;
+	}
+
+	public void setRelevantExp(String relevantExp) {
+		this.relevantExp = relevantExp;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
 	}
 
 	public String getFirstName() {
@@ -45,22 +88,6 @@ public class ProfileSummary {
 		this.lastName = lastName;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
 	public String getLocation() {
 		return location;
 	}
@@ -83,30 +110,6 @@ public class ProfileSummary {
 
 	public void setOverAllRating(double overAllRating) {
 		this.overAllRating = overAllRating;
-	}
-
-	public String getInterviewBy() {
-		return interviewBy;
-	}
-
-	public void setInterviewBy(String interviewBy) {
-		this.interviewBy = interviewBy;
-	}
-
-	public LocalDateTime getInterviewDateTime() {
-		return interviewDateTime;
-	}
-
-	public void setInterviewDateTime(LocalDateTime interviewDateTime) {
-		this.interviewDateTime = interviewDateTime;
-	}
-
-	public String getManagedBy() {
-		return managedBy;
-	}
-
-	public void setManagedBy(String managedBy) {
-		this.managedBy = managedBy;
 	}
 
 }
