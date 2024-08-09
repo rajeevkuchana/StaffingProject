@@ -13,15 +13,6 @@ public class User {
 	private String password;
 	private String company;
 
-	public User(String id, String username, String email, String role, String password) {
-		super();
-		this.id = id;
-		this.username = username;
-		this.email = email;
-		this.role = role;
-		this.password = password;
-	}
-
 	public String getCompany() {
 		return company;
 	}

@@ -2,13 +2,14 @@ package com.staffing.jobportal.service;
 
 import java.util.List;
 
-import com.staffing.jobportal.models.JobSearchSummary;
+import com.staffing.jobportal.models.JobProfiles;
 import com.staffing.jobportal.models.ProfileDetails;
+import com.staffing.jobportal.models.ProfileSummary;
 import com.staffing.jobportal.models.SearchJob;
 
 public interface ProfileService {
 
-	public JobSearchSummary getAllProfiles(SearchJob searchJob) ;
+	public List<ProfileSummary> getAllProfiles(SearchJob searchJob) ;
 
 	public ProfileDetails getProfileByProfileId(String id);
 
@@ -21,5 +22,9 @@ public interface ProfileService {
 	public boolean editProfile(String profileId, ProfileDetails updatedProfile);
 
 	public boolean selectProfile(String profileId, String selectedBy);
-
+	
+	public List<JobProfiles> getJobProfiles(String jobCategory) ;
+	
+	public boolean addJobProfiles(JobProfiles jobProfiles);
+		
 }

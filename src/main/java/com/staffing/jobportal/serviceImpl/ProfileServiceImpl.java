@@ -11,11 +11,14 @@ import org.bson.json.JsonParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.staffing.jobportal.models.JobSearchSummary;
+import com.staffing.jobportal.models.JobDescription;
+import com.staffing.jobportal.models.JobProfiles;
 import com.staffing.jobportal.models.ProfileDetails;
 import com.staffing.jobportal.models.ProfileSummary;
 import com.staffing.jobportal.models.SearchJob;
 import com.staffing.jobportal.models.User;
+import com.staffing.jobportal.repo.JobDescriptionRepo;
+import com.staffing.jobportal.repo.JobProfileRepo;
 import com.staffing.jobportal.repo.ProfileDetailsRepo;
 import com.staffing.jobportal.repo.UserRepo;
 import com.staffing.jobportal.service.ProfileService;
@@ -29,54 +32,59 @@ public class ProfileServiceImpl implements ProfileService {
 	@Autowired
 	private ProfileDetailsRepo profileDetailsRepo;
 
-	@Override
-	public JobSearchSummary getAllProfiles(SearchJob searchJob) {
+	@Autowired
+	private JobDescriptionRepo jobDescriptionRepo;
+	
+	@Autowired
+	private JobProfileRepo jobProfileRepo;
 
-		JobSearchSummary jobSearchSummary = new JobSearchSummary();
+	@Override
+	public List<ProfileSummary> getAllProfiles(SearchJob searchJob) {
+
+		
 		List<ProfileSummary> profileSummaryList = new ArrayList<>();
+		
 		List<ProfileDetails> profiles = null;
 		String email = searchJob.getEmail();
 		User user = null;
 		String company = null;
-		
+
 		try {
-			
-			user = userRepository.findByEmail(email);
-			company = user.getCompany();
-			if (null != searchJob.getJobProfile() && searchJob.getJobProfile().size() > 0) {
+				user = userRepository.findByEmail(email);
+				company = user.getCompany();
+				if (null != searchJob.getJobProfile() && searchJob.getJobProfile().size() > 0) {
 
-				profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(),
-						searchJob.getJobProfile(), company);
-			} else {
-				profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), company);
-			}
+					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(),
+							searchJob.getJobProfile(), company);
+				} else {
+					profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), company);
+				}
 
-			Iterator<ProfileDetails> itr = profiles.iterator();
-			while (itr.hasNext()) {
-				ProfileDetails profileDetails = itr.next();
-				ProfileSummary profilSummary = new ProfileSummary();
-				profilSummary.setProfileId(profileDetails.getProfileId());
-				profilSummary.setFirstName(profileDetails.getFirstName());
-				profilSummary.setLastName(profileDetails.getLastName());
-				profilSummary.setCurrentCompany(profileDetails.getCurrentCompany());
-				profilSummary.setDesignation(profileDetails.getDesignation());
-				profilSummary.setLocation(profileDetails.getLocation());
-				profilSummary.setCurrentCTC(profileDetails.getCurrentCTC());
-				profilSummary.setExpectedCTC(profileDetails.getExpectedCTC());
-				profilSummary.setOverallExp(profileDetails.getOverallExp());
-				profilSummary.setRelevantExp(profileDetails.getRelevantExp());
-				profilSummary.setOverAllRating(profileDetails.getOverAllRating());
-				
-				profileSummaryList.add(profilSummary);
-			}
-			
-			jobSearchSummary.setProfileList(profileSummaryList);
+				Iterator<ProfileDetails> itr = profiles.iterator();
+				while (itr.hasNext()) {
+					ProfileDetails profileDetails = itr.next();
+					ProfileSummary profilSummary = new ProfileSummary();
+					profilSummary.setProfileId(profileDetails.getProfileId());
+					profilSummary.setFirstName(profileDetails.getFirstName());
+					profilSummary.setLastName(profileDetails.getLastName());
+					profilSummary.setCurrentCompany(profileDetails.getCurrentCompany());
+					profilSummary.setDesignation(profileDetails.getDesignation());
+					profilSummary.setLocation(profileDetails.getLocation());
+					profilSummary.setCurrentCTC(profileDetails.getCurrentCTC());
+					profilSummary.setExpectedCTC(profileDetails.getExpectedCTC());
+					profilSummary.setOverallExp(profileDetails.getOverallExp());
+					profilSummary.setRelevantExp(profileDetails.getRelevantExp());
+					profilSummary.setOverAllRating(profileDetails.getOverAllRating());
+
+					profileSummaryList.add(profilSummary);
+				}
+		
 		} catch (JsonParseException jsonException) {
 			jsonException.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return jobSearchSummary; 
+		return profileSummaryList;
 	}
 
 	@Override
@@ -106,8 +114,8 @@ public class ProfileServiceImpl implements ProfileService {
 
 		try {
 			profile.setProfileId(UUID.randomUUID() + "");
-			DoubleStream doubleStream = DoubleStream.of(profile.getRating1(), profile.getRating2(),
-					profile.getRating3(), profile.getRating4(), profile.getRating5());
+			DoubleStream doubleStream = DoubleStream.of(profile.getDataEngR(), profile.getCloudEngR(),
+					profile.getProgrammingR(), profile.getCommunicationR(), profile.getAttitudeR());
 			OptionalDouble res = doubleStream.average();
 			profile.setOverAllRating(res.getAsDouble());
 
@@ -166,6 +174,31 @@ public class ProfileServiceImpl implements ProfileService {
 			e.printStackTrace();
 		}
 		return selectStatus;
+	}
+
+	@Override
+	public List<JobProfiles> getJobProfiles(String jobCategory) {
+		List<JobProfiles> jobProfiles = null;
+		try {
+			jobProfiles = jobProfileRepo.findAll();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jobProfiles;
+	}
+	
+	@Override
+	public boolean addJobProfiles(JobProfiles jobProfiles) {
+		boolean addStatus = false;
+		try {
+			jobProfiles.setId(UUID.randomUUID() + "");
+			jobProfiles = jobProfileRepo.save(jobProfiles);
+			addStatus = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return addStatus;
 	}
 
 }

@@ -6,11 +6,40 @@ public class SearchJob {
 
 	private String jobCategory;
 	
-	private String jobType;
-	
 	private List<String> jobProfile;
 	
+	private String experienceRange;
+	
+	private String noticePeriod;
+	
+	private int budget;
+	
 	private String email;
+
+	
+	public String getExperienceRange() {
+		return experienceRange;
+	}
+
+	public void setExperienceRange(String experienceRange) {
+		this.experienceRange = experienceRange;
+	}
+
+	public String getNoticePeriod() {
+		return noticePeriod;
+	}
+
+	public void setNoticePeriod(String noticePeriod) {
+		this.noticePeriod = noticePeriod;
+	}
+
+	public int getBudget() {
+		return budget;
+	}
+
+	public void setBudget(int budget) {
+		this.budget = budget;
+	}
 
 	public String getJobCategory() {
 		return jobCategory;
@@ -18,14 +47,6 @@ public class SearchJob {
 
 	public void setJobCategory(String jobCategory) {
 		this.jobCategory = jobCategory;
-	}
-
-	public String getJobType() {
-		return jobType;
-	}
-
-	public void setJobType(String jobType) {
-		this.jobType = jobType;
 	}
 
 	public String getEmail() {

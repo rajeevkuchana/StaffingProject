@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 //Profile.java
-@Document(collection = "profile_details")
+@Document(collection = "profiles")
 public class ProfileDetails {
 	
 	
@@ -25,13 +25,15 @@ public class ProfileDetails {
 	private String overallExp;
 	private String relevantExp;
 	private String designation;
+	private Summary summary;
+	private List<String> certificationList;
 	private List<String> jobProfile;
 	private String jobCategory;
-	private double rating1;
-	private double rating2;
-	private double rating3;
-	private double rating4;
-	private double rating5;
+	private double dataEngR;
+	private double programmingR;
+	private double cloudEngR;
+	private double communicationR;
+	private double attitudeR;
 	private double overAllRating;
 	private BasicDetails basicDetails;
 	private ExperienceDetails experienceDetails;
@@ -45,14 +47,25 @@ public class ProfileDetails {
 	private String selectedBy;
 	private LocalDateTime selectedDateTime;
 
-	// Getters and Setters
-	// Constructors
-	// toString method
-	// Other methods as needed
-
 	
 	public String getStatus() {
 		return status;
+	}
+
+	public Summary getSummary() {
+		return summary;
+	}
+
+	public void setSummary(Summary summary) {
+		this.summary = summary;
+	}
+
+	public List<String> getCertificationList() {
+		return certificationList;
+	}
+
+	public void setCertificationList(List<String> certificationList) {
+		this.certificationList = certificationList;
 	}
 
 	public String getCurrentCTC() {
@@ -178,46 +191,6 @@ public class ProfileDetails {
 		this.profilePic = profilePic;
 	}
 
-	public double getRating1() {
-		return rating1;
-	}
-
-	public void setRating1(double rating1) {
-		this.rating1 = rating1;
-	}
-
-	public double getRating2() {
-		return rating2;
-	}
-
-	public void setRating2(double rating2) {
-		this.rating2 = rating2;
-	}
-
-	public double getRating3() {
-		return rating3;
-	}
-
-	public void setRating3(double rating3) {
-		this.rating3 = rating3;
-	}
-
-	public double getRating4() {
-		return rating4;
-	}
-
-	public void setRating4(double rating4) {
-		this.rating4 = rating4;
-	}
-
-	public double getRating5() {
-		return rating5;
-	}
-
-	public void setRating5(double rating5) {
-		this.rating5 = rating5;
-	}
-
 	public double getOverAllRating() {
 		return overAllRating;
 	}
@@ -314,6 +287,47 @@ public class ProfileDetails {
 		this.jobCategory = jobCategory;
 	}
 
+	public double getDataEngR() {
+		return dataEngR;
+	}
+
+	public void setDataEngR(double dataEngR) {
+		this.dataEngR = dataEngR;
+	}
+
+	public double getProgrammingR() {
+		return programmingR;
+	}
+
+	public void setProgrammingR(double programmingR) {
+		this.programmingR = programmingR;
+	}
+
+	public double getCloudEngR() {
+		return cloudEngR;
+	}
+
+	public void setCloudEngR(double cloudEngR) {
+		this.cloudEngR = cloudEngR;
+	}
+
+	public double getCommunicationR() {
+		return communicationR;
+	}
+
+	public void setCommunicationR(double communicationR) {
+		this.communicationR = communicationR;
+	}
+
+	public double getAttitudeR() {
+		return attitudeR;
+	}
+
+	public void setAttitudeR(double attitudeR) {
+		this.attitudeR = attitudeR;
+	}
+
+	
 }
 
 
