@@ -1,6 +1,6 @@
 package com.staffing.jobportal.models;
 
-import java.util.Map;
+import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,20 +10,15 @@ public class JobProfiles {
 
 	private String id;
 	
-	private String jobProfiles;
+	private String categoryCode;
 	
-	private String jobProfilesDisplay;
+	private String categoryDisplay;
 	
-	private Map<String, String> jobProfileSub;
-
+	private String CategoryDescriptions;
 	
-	public String getJobProfilesDisplay() {
-		return jobProfilesDisplay;
-	}
-
-	public void setJobProfilesDisplay(String jobProfilesDisplay) {
-		this.jobProfilesDisplay = jobProfilesDisplay;
-	}
+	private String categoryIcon;
+	
+	private List<JobProfilesSubCat>  jobProfilesSubCats;
 
 	public String getId() {
 		return id;
@@ -33,24 +28,45 @@ public class JobProfiles {
 		this.id = id;
 	}
 
-	public String getJobProfiles() {
-		return jobProfiles;
+	public String getCategoryCode() {
+		return categoryCode;
 	}
 
-	public void setJobProfiles(String jobProfiles) {
-		this.jobProfiles = jobProfiles;
+	public void setCategoryCode(String categoryCode) {
+		this.categoryCode = categoryCode;
 	}
 
-	public Map<String, String> getJobProfileSub() {
-		return jobProfileSub;
+	public String getCategoryDisplay() {
+		return categoryDisplay;
 	}
 
-	public void setJobProfileSub(Map<String, String> jobProfileSub) {
-		this.jobProfileSub = jobProfileSub;
+	public void setCategoryDisplay(String categoryDisplay) {
+		this.categoryDisplay = categoryDisplay;
 	}
 
-	
-	
+	public String getCategoryDescriptions() {
+		return CategoryDescriptions;
+	}
 
-	// Constructors, getters, setters
+	public void setCategoryDescriptions(String categoryDescriptions) {
+		CategoryDescriptions = categoryDescriptions;
+	}
+
+	public String getCategoryIcon() {
+		return categoryIcon;
+	}
+
+	public void setCategoryIcon(String categoryIcon) {
+		this.categoryIcon = categoryIcon;
+	}
+
+	public List<JobProfilesSubCat> getJobProfilesSubCats() {
+		return jobProfilesSubCats;
+	}
+
+	public void setJobProfilesSubCats(List<JobProfilesSubCat> jobProfilesSubCats) {
+		this.jobProfilesSubCats = jobProfilesSubCats;
+	}
+
+
 }
