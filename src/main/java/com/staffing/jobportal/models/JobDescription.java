@@ -6,28 +6,20 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "jobDescription")
 public class JobDescription {
 
-	private String jobDescriptionText;
-	
-	private String jobCategoryCode;
+	private String id;
 	
 	private String jobCategory;
 	
-	private String id;
+	private String jobCategoryCode;	
 	
-	public String getJobDescriptionText() {
-		return jobDescriptionText;
+	private String jobDescriptionText;
+
+	public String getId() {
+		return id;
 	}
 
-	public void setJobDescriptionText(String jobDescriptionText) {
-		this.jobDescriptionText = jobDescriptionText;
-	}
-
-	public String getJobCategoryCode() {
-		return jobCategoryCode;
-	}
-
-	public void setJobCategoryCode(String jobCategoryCode) {
-		this.jobCategoryCode = jobCategoryCode;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getJobCategory() {
@@ -38,20 +30,22 @@ public class JobDescription {
 		this.jobCategory = jobCategory;
 	}
 
-	public String getId() {
-		return id;
+	public String getJobCategoryCode() {
+		return jobCategoryCode;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setJobCategoryCode(String jobCategoryCode) {
+		this.jobCategoryCode = jobCategoryCode;
 	}
 
-	public String getJobDescription() {
+	public String getJobDescriptionText() {
 		return jobDescriptionText;
 	}
 
-	public void setJobDescription(String jobDescription) {
-		this.jobDescriptionText = jobDescription;
+	public void setJobDescriptionText(String jobDescriptionText) {
+		this.jobDescriptionText = jobDescriptionText;
 	}
-
+	
+	
+	
 }
