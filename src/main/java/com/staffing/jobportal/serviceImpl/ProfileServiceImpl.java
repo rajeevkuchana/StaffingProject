@@ -201,4 +201,29 @@ public class ProfileServiceImpl implements ProfileService {
 		return addStatus;
 	}
 
+	@Override
+	public JobDescription getJobDescription(String jobCategory, String jobCategoryCode) {
+		JobDescription jobDescription = null;
+		try {
+			jobDescription = jobDescriptionRepo.findByCategory(jobCategory, jobCategoryCode);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return jobDescription;
+	}
+
+	@Override
+	public boolean addJobDescription(JobDescription jobDescription) {
+		boolean addStatus = false;
+		try {
+			jobDescription.setId(UUID.randomUUID() + "");
+			jobDescription = jobDescriptionRepo.save(jobDescription);
+			addStatus = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return addStatus;
+	}
+
 }

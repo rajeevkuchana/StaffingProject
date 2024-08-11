@@ -2,6 +2,7 @@ package com.staffing.jobportal.service;
 
 import java.util.List;
 
+import com.staffing.jobportal.models.JobDescription;
 import com.staffing.jobportal.models.JobProfiles;
 import com.staffing.jobportal.models.ProfileDetails;
 import com.staffing.jobportal.models.ProfileSummary;
@@ -26,5 +27,9 @@ public interface ProfileService {
 	public List<JobProfiles> getJobProfiles(String jobCategory) ;
 	
 	public boolean addJobProfiles(JobProfiles jobProfiles);
+	
+	public JobDescription getJobDescription(String jobCategory, String jobCategoryCode);
+	
+	public boolean addJobDescription(JobDescription jobDescription);
 		
 }
