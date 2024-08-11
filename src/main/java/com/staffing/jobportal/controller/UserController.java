@@ -35,12 +35,7 @@ public class UserController {
 	@PostMapping("/user/add")
 	public ResponseEntity<String> addUser(@RequestBody User user) {
 		String createStatus = userService.addUser(user);
-		if(createStatus.equals("")) {
-			return ResponseEntity.status(HttpStatus.OK).body(createStatus);
-		}else {
-			return ResponseEntity.status(HttpStatus.OK).body(createStatus);
-		}
-		
+		return ResponseEntity.status(HttpStatus.OK).body(createStatus);
 	}
 
 	@DeleteMapping("/user/delete/{userId}")
@@ -54,14 +49,12 @@ public class UserController {
 			@ApiParam(value = "Profile object to be added", required = true) @RequestBody UserLogin userLogin) {
 		User user = userService.verifyUser(userLogin.getEmail(), userLogin.getPassword());
 		return ResponseEntity.status(HttpStatus.OK).body(user);
-
 	}
 
 	@GetMapping("users")
 	public ResponseEntity<List<User>> getAllUser() {
 		List<User> userList = userService.getAllUsers();
 		return ResponseEntity.status(HttpStatus.OK).body(userList);
-
 	}
 
 }

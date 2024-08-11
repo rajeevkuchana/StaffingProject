@@ -1,9 +1,6 @@
 package com.staffing.jobportal.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +28,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import springfox.documentation.annotations.ApiIgnore;
 
 @CrossOrigin(origins = { "http://localhost:3000" }, methods = { RequestMethod.OPTIONS, RequestMethod.GET,
 		RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.POST })
@@ -46,14 +42,7 @@ public class ProfileController {
 	@PostMapping("")
 	@ApiOperation("Get all profiles based on role and status")
 	public List<ProfileSummary> getAllProfiles(
-	// @ApiParam(value = "email", required = true) @RequestParam(value = "email")
-	// String email
-//            @ApiParam(value = "Role (Client or Interviewer)", required = true) @RequestParam(value = "role") String role,
-//            @ApiParam(value = "Created by (for Interviewer role)", required = false) @RequestParam(value = "createdBy", required = false) String createdBy,
-//            @ApiParam(value = "Status", required = true, allowableValues = "UPLOADED, SCREENED, PENDING_INTERVIEW, INTERVIEWED, SELECTED, RECRUITED, REJECTED")
-			@ApiParam(value = "Profile object to be added", required = true) @RequestBody SearchJob searchJob
-//            @RequestParam(value = "status") ProfileStatus status
-	) {
+			@ApiParam(value = "Profile object to be added", required = true) @RequestBody SearchJob searchJob) {
 		List<ProfileSummary> profileList = profileService.getAllProfiles(searchJob);
 		return profileList;
 
@@ -64,8 +53,6 @@ public class ProfileController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "Profile created successfully"),
 			@ApiResponse(code = 400, message = "Invalid input data") })
 	public ResponseEntity<ProfileDetails> addProfile(
-			// @ApiParam(value = "email", required = true) @RequestParam(value = "email")
-			// String email,
 			@ApiParam(value = "Profile object to be added", required = true) @RequestBody ProfileDetails profile) {
 		ProfileDetails addedProfile = profileService.addProfile(profile);
 		return ResponseEntity.status(HttpStatus.CREATED).body(addedProfile);
