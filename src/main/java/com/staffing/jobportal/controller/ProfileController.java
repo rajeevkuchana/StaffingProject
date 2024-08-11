@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.staffing.jobportal.models.JobDescription;
 import com.staffing.jobportal.models.JobProfiles;
 import com.staffing.jobportal.models.ProfileDetails;
 import com.staffing.jobportal.models.ProfileSummary;
@@ -68,6 +69,24 @@ public class ProfileController {
 		} else {
 			return ResponseEntity.notFound().build();
 		}
+	}
+
+	@GetMapping("/jobDescription")
+	@ApiOperation("Get Job Description")
+	public ResponseEntity<JobDescription> getProfileById(
+			@ApiParam(value = "Profile ID", example = "1", required = true) @RequestParam String jobCategory,
+			@ApiParam(value = "Profile ID", example = "1", required = true) @RequestParam String jobCategoryCode) {
+		JobDescription jobDescription = profileService.getJobDescription(jobCategory, jobCategoryCode);
+		return ResponseEntity.ok(jobDescription);
+	}
+	
+	@PostMapping("/add/jobDescription")
+	@ApiOperation("Get Job Description")
+	public ResponseEntity<Boolean> addProfileById(
+			@ApiParam(value = "Job Description", example = "1", required = true) @RequestBody JobDescription jobDescription) {
+		boolean addStatus = false;
+		addStatus = profileService.addJobDescription(jobDescription);
+		return ResponseEntity.ok(addStatus);
 	}
 
 	@GetMapping("/jobProfiles")
