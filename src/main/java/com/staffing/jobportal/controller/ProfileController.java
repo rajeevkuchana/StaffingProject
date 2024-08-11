@@ -100,7 +100,7 @@ public class ProfileController {
 		ProfileSummary profileSummary3 = new ProfileSummary();
 		profileSummary3.setProfileId("831b4047-c10a-4642-8b7b-59de8df89f38");
 		profileSummary3.setFirstName("Ramesh");
-		profileSummary3.setLastName("TenA");
+		profileSummary3.setLastName("Tendulkar");
 		profileSummary3.setCurrentCompany("TEST");
 		profileSummary3.setDesignation("QA");
 		profileSummary3.setCurrentCTC("17-LPA");
