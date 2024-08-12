@@ -1,5 +1,6 @@
 package com.staffing.jobportal.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +19,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.staffing.jobportal.models.BasicDetails;
+import com.staffing.jobportal.models.ExperienceDetails;
+import com.staffing.jobportal.models.Feedback;
 import com.staffing.jobportal.models.JobDescription;
 import com.staffing.jobportal.models.JobProfiles;
 import com.staffing.jobportal.models.JobProfilesSubCat;
 import com.staffing.jobportal.models.ProfileDetails;
 import com.staffing.jobportal.models.ProfileSummary;
 import com.staffing.jobportal.models.SearchJob;
+import com.staffing.jobportal.models.Summary;
 import com.staffing.jobportal.service.ProfileService;
 
 import io.swagger.annotations.Api;
@@ -131,12 +136,68 @@ public class ProfileController {
 	@ApiOperation("Get a profile by ID")
 	public ResponseEntity<ProfileDetails> getProfileById(
 			@ApiParam(value = "Profile ID", example = "1", required = true) @PathVariable String profileId) {
-		ProfileDetails profile = profileService.getProfileByProfileId(profileId);
-		if (profile != null) {
-			return ResponseEntity.ok(profile);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+		ProfileDetails profileDetails = new ProfileDetails();
+		Summary summary = new Summary();
+		summary.setSummary1("Summary 1");
+		summary.setSummary2("Summary 2");
+		summary.setSummary3("Summary 3");
+		summary.setSummary4("Summary 4");
+
+		BasicDetails basicDetails = new BasicDetails();
+		basicDetails.setBasicD1("Basic 1");
+		basicDetails.setBasicD2("Basic 2");
+		basicDetails.setBasicD3("Basic 3");
+		basicDetails.setBasicD4("Basic 4");
+
+		ExperienceDetails experienceDetails = new ExperienceDetails();
+		experienceDetails.setExpD1("Experiemnce 1");
+		experienceDetails.setExpD2("Experiemnce 2");
+		experienceDetails.setExpD3("Experiemnce 3");
+		experienceDetails.setExpD4("Experiemnce 4");
+
+		Feedback feedback = new Feedback();
+		feedback.setLongFeedback("Long Feed Back");
+		feedback.setShortFeedback("Short Feedback");
+
+		profileDetails.setProfileId("ee728662-7693-4444-ab1d-a84ffcdff8df");
+		profileDetails.setFirstName("Sachin");
+		profileDetails.setLastName("Ten");
+		profileDetails.setCurrentCompany("TCS");
+		profileDetails.setDesignation("Developer");
+		profileDetails.setCurrentCTC("23-LPA");
+		profileDetails.setExpectedCTC("30-LPA");
+		profileDetails.setOverallExp("10-Years");
+		profileDetails.setRelevantExp("8-Years");
+		profileDetails.setOverAllRating(4);
+		profileDetails.setLocation("Banglore");
+		profileDetails.setGender("Male");
+		profileDetails.setEmail("Sachin.ten@gmail.com");
+		profileDetails.setPhone("7418529635");
+		profileDetails.setDataEngR(4);
+		profileDetails.setProgrammingR(3);
+		profileDetails.setCloudEngR(5);
+		profileDetails.setCommunicationR(4);
+		profileDetails.setAttitudeR(4);
+		profileDetails.setOverAllRating(4);
+		List<String> cerList = new ArrayList<String>();
+		cerList.add(" Java Cer");
+		cerList.add("PMP");
+		profileDetails.setCertificationList(cerList);
+		List<String> jProfiles = new ArrayList<String>();
+		jProfiles.add("AWS");
+		jProfiles.add("Backend");
+		profileDetails.setJobProfile(jProfiles);
+		profileDetails.setSummary(summary);
+		profileDetails.setBasicDetails(basicDetails);
+		profileDetails.setExperienceDetails(experienceDetails);
+		profileDetails.setFeedback(feedback);
+		profileDetails.setJobCategory("fultime");
+		profileDetails.setInterviewBy("Interviewer11");
+		profileDetails.setInterviewDateTime(LocalDateTime.now());
+		profileDetails.setManagedBy("Manager1");
+		
+		return ResponseEntity.ok(profileDetails);
+
 	}
 
 	@GetMapping("/jobDescription")
