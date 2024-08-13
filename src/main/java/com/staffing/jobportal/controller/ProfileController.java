@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.staffing.jobportal.models.BasicDetails;
 import com.staffing.jobportal.models.ExperienceDetails;
 import com.staffing.jobportal.models.Feedback;
 import com.staffing.jobportal.models.JobDescription;
@@ -67,10 +66,10 @@ public class ProfileController {
 		profileSummary.setLastName("Ten");
 		profileSummary.setCurrentCompany("TCS");
 		profileSummary.setDesignation("Developer");
-		profileSummary.setCurrentCTC("23-LPA");
-		profileSummary.setExpectedCTC("30-LPA");
-		profileSummary.setOverallExp("10-Years");
-		profileSummary.setRelevantExp("8-Years");
+		profileSummary.setCurrentCTC(23);
+		profileSummary.setExpectedCTC(30);
+		profileSummary.setOverallExp(10);
+		profileSummary.setRelevantExp(8);
 		profileSummary.setOverAllRating(4);
 		profileSummary.setLocation("Banglore");
 		profileList.add(profileSummary);
@@ -81,10 +80,10 @@ public class ProfileController {
 		profileSummary1.setLastName("TenA");
 		profileSummary1.setCurrentCompany("WIPRO");
 		profileSummary1.setDesignation("Sr Developer");
-		profileSummary1.setCurrentCTC("35-LPA");
-		profileSummary1.setExpectedCTC("40-LPA");
-		profileSummary1.setOverallExp("15-Years");
-		profileSummary1.setRelevantExp("12-Years");
+		profileSummary1.setCurrentCTC(35);
+		profileSummary1.setExpectedCTC(40);
+		profileSummary1.setOverallExp(15);
+		profileSummary1.setRelevantExp(12);
 		profileSummary1.setLocation("Mumbai");
 		profileSummary1.setOverAllRating(3);
 		profileList.add(profileSummary1);
@@ -95,10 +94,10 @@ public class ProfileController {
 		profileSummary2.setLastName("TenA");
 		profileSummary2.setCurrentCompany("TCS");
 		profileSummary2.setDesignation("DevOps");
-		profileSummary2.setCurrentCTC("25-LPA");
-		profileSummary2.setExpectedCTC("30-LPA");
-		profileSummary2.setOverallExp("5-Years");
-		profileSummary2.setRelevantExp("5-Years");
+		profileSummary2.setCurrentCTC(25);
+		profileSummary2.setExpectedCTC(30);
+		profileSummary2.setOverallExp(5);
+		profileSummary2.setRelevantExp(5);
 		profileSummary2.setLocation("Hyderabad");
 		profileSummary2.setOverAllRating(3);
 		profileList.add(profileSummary2);
@@ -109,10 +108,10 @@ public class ProfileController {
 		profileSummary3.setLastName("Tendulkar");
 		profileSummary3.setCurrentCompany("TEST");
 		profileSummary3.setDesignation("QA");
-		profileSummary3.setCurrentCTC("17-LPA");
-		profileSummary3.setExpectedCTC("23-LPA");
-		profileSummary3.setOverallExp("9-Years");
-		profileSummary3.setRelevantExp("8-Years");
+		profileSummary3.setCurrentCTC(17);
+		profileSummary3.setExpectedCTC(23);
+		profileSummary3.setOverallExp(9);
+		profileSummary3.setRelevantExp(8);
 		profileSummary3.setOverAllRating(3);
 		profileList.add(profileSummary3);
 
@@ -143,12 +142,6 @@ public class ProfileController {
 		summary.setSummary3("Summary 3");
 		summary.setSummary4("Summary 4");
 
-		BasicDetails basicDetails = new BasicDetails();
-		basicDetails.setBasicD1("Basic 1");
-		basicDetails.setBasicD2("Basic 2");
-		basicDetails.setBasicD3("Basic 3");
-		basicDetails.setBasicD4("Basic 4");
-
 		ExperienceDetails experienceDetails = new ExperienceDetails();
 		experienceDetails.setExpD1("Experiemnce 1");
 		experienceDetails.setExpD2("Experiemnce 2");
@@ -164,10 +157,10 @@ public class ProfileController {
 		profileDetails.setLastName("Ten");
 		profileDetails.setCurrentCompany("TCS");
 		profileDetails.setDesignation("Developer");
-		profileDetails.setCurrentCTC("23-LPA");
-		profileDetails.setExpectedCTC("30-LPA");
-		profileDetails.setOverallExp("10-Years");
-		profileDetails.setRelevantExp("8-Years");
+		profileDetails.setCurrentCTC(23);
+		profileDetails.setExpectedCTC(30);
+		profileDetails.setOverallExp(10);
+		profileDetails.setRelevantExp(8);
 		profileDetails.setOverAllRating(4);
 		profileDetails.setLocation("Banglore");
 		profileDetails.setGender("Male");
@@ -188,7 +181,6 @@ public class ProfileController {
 		jProfiles.add("Backend");
 		profileDetails.setJobProfile(jProfiles);
 		profileDetails.setSummary(summary);
-		profileDetails.setBasicDetails(basicDetails);
 		profileDetails.setExperienceDetails(experienceDetails);
 		profileDetails.setFeedback(feedback);
 		profileDetails.setJobCategory("fultime");
@@ -348,10 +340,10 @@ public class ProfileController {
 		profileSummary.setLastName("Ten");
 		profileSummary.setCurrentCompany("TCS");
 		profileSummary.setDesignation("Developer");
-		profileSummary.setCurrentCTC("23-LPA");
-		profileSummary.setExpectedCTC("30-LPA");
-		profileSummary.setOverallExp("10-Years");
-		profileSummary.setRelevantExp("8-Years");
+		profileSummary.setCurrentCTC(23);
+		profileSummary.setExpectedCTC(30);
+		profileSummary.setOverallExp(10);
+		profileSummary.setRelevantExp(8);
 		profileSummary.setOverAllRating(4);
 		profileList.add(profileSummary);
 
@@ -360,10 +352,10 @@ public class ProfileController {
 		profileSummary.setLastName("TenA");
 		profileSummary.setCurrentCompany("WIPRO");
 		profileSummary.setDesignation("Sr Developer");
-		profileSummary.setCurrentCTC("35-LPA");
-		profileSummary.setExpectedCTC("40-LPA");
-		profileSummary.setOverallExp("15-Years");
-		profileSummary.setRelevantExp("12-Years");
+		profileSummary.setCurrentCTC(35);
+		profileSummary.setExpectedCTC(40);
+		profileSummary.setOverallExp(15);
+		profileSummary.setRelevantExp(12);
 		profileSummary.setOverAllRating(3);
 		profileList.add(profileSummary);
 
@@ -372,10 +364,10 @@ public class ProfileController {
 		profileSummary.setLastName("TenA");
 		profileSummary.setCurrentCompany("TCS");
 		profileSummary.setDesignation("DevOps");
-		profileSummary.setCurrentCTC("25-LPA");
-		profileSummary.setExpectedCTC("30-LPA");
-		profileSummary.setOverallExp("5-Years");
-		profileSummary.setRelevantExp("5-Years");
+		profileSummary.setCurrentCTC(25);
+		profileSummary.setExpectedCTC(30);
+		profileSummary.setOverallExp(5);
+		profileSummary.setRelevantExp(5);
 		profileSummary.setOverAllRating(3);
 		profileList.add(profileSummary);
 
@@ -384,10 +376,10 @@ public class ProfileController {
 		profileSummary.setLastName("TenA");
 		profileSummary.setCurrentCompany("TEST");
 		profileSummary.setDesignation("QA");
-		profileSummary.setCurrentCTC("17-LPA");
-		profileSummary.setExpectedCTC("23-LPA");
-		profileSummary.setOverallExp("9-Years");
-		profileSummary.setRelevantExp("8-Years");
+		profileSummary.setCurrentCTC(17);
+		profileSummary.setExpectedCTC(23);
+		profileSummary.setOverallExp(9);
+		profileSummary.setRelevantExp(8);
 		profileSummary.setOverAllRating(3);
 		profileList.add(profileSummary);
 

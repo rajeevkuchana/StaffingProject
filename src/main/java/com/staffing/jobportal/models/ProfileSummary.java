@@ -2,7 +2,7 @@ package com.staffing.jobportal.models;
 
 //Profile.java
 public class ProfileSummary {
-	
+
 	private String profileId;
 	private String firstName;
 	private String lastName;
@@ -10,63 +10,11 @@ public class ProfileSummary {
 	private String designation;
 	private String location;
 	private String profilePic;
-	private String currentCTC;
-	private String expectedCTC;
-	private String overallExp;
-	private String relevantExp;
+	private int currentCTC;
+	private int expectedCTC;
+	private int overallExp;
+	private int relevantExp;
 	private double overAllRating;
-
-	public String getExpectedCTC() {
-		return expectedCTC;
-	}
-
-	public void setExpectedCTC(String expectedCTC) {
-		this.expectedCTC = expectedCTC;
-	}
-
-	public String getCurrentCompany() {
-		return currentCompany;
-	}
-
-	public void setCurrentCompany(String currentCompany) {
-		this.currentCompany = currentCompany;
-	}
-
-	public String getCurrentCTC() {
-		return currentCTC;
-	}
-
-	public void setCurrentCTC(String currentCTC) {
-		this.currentCTC = currentCTC;
-	}
-
-	public String getOverallExp() {
-		return overallExp;
-	}
-
-	public void setOverallExp(String overallExp) {
-		this.overallExp = overallExp;
-	}
-
-	public String getRelevantExp() {
-		return relevantExp;
-	}
-
-	public void setRelevantExp(String relevantExp) {
-		this.relevantExp = relevantExp;
-	}
-
-	public String getDesignation() {
-		return designation;
-	}
-
-	public void setDesignation(String designation) {
-		this.designation = designation;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
 
 	public String getProfileId() {
 		return profileId;
@@ -74,6 +22,10 @@ public class ProfileSummary {
 
 	public void setProfileId(String profileId) {
 		this.profileId = profileId;
+	}
+
+	public String getFirstName() {
+		return firstName;
 	}
 
 	public void setFirstName(String firstName) {
@@ -86,6 +38,22 @@ public class ProfileSummary {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public String getCurrentCompany() {
+		return currentCompany;
+	}
+
+	public void setCurrentCompany(String currentCompany) {
+		this.currentCompany = currentCompany;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
 	}
 
 	public String getLocation() {
@@ -104,6 +72,38 @@ public class ProfileSummary {
 		this.profilePic = profilePic;
 	}
 
+	public int getCurrentCTC() {
+		return currentCTC;
+	}
+
+	public void setCurrentCTC(int currentCTC) {
+		this.currentCTC = currentCTC;
+	}
+
+	public int getExpectedCTC() {
+		return expectedCTC;
+	}
+
+	public void setExpectedCTC(int expectedCTC) {
+		this.expectedCTC = expectedCTC;
+	}
+
+	public int getOverallExp() {
+		return overallExp;
+	}
+
+	public void setOverallExp(int overallExp) {
+		this.overallExp = overallExp;
+	}
+
+	public int getRelevantExp() {
+		return relevantExp;
+	}
+
+	public void setRelevantExp(int relevantExp) {
+		this.relevantExp = relevantExp;
+	}
+
 	public double getOverAllRating() {
 		return overAllRating;
 	}
@@ -113,5 +113,3 @@ public class ProfileSummary {
 	}
 
 }
-
-//ProfileStatus.java (Enum for profile status)

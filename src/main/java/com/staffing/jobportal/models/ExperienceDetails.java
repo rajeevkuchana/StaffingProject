@@ -3,7 +3,6 @@ package com.staffing.jobportal.models;
 
 public class ExperienceDetails {
 	
-
 	private String expD1;
 	
 	private String expD2;
@@ -43,7 +42,4 @@ public class ExperienceDetails {
 	public void setExpD4(String expD4) {
 		this.expD4 = expD4;
 	}
-
 }
-
-//ProfileStatus.java (Enum for profile status)
