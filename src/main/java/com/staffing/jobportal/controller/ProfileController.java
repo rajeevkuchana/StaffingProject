@@ -1,5 +1,7 @@
 package com.staffing.jobportal.controller;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +19,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.staffing.jobportal.models.ExperienceDetails;
+import com.staffing.jobportal.models.Feedback;
 import com.staffing.jobportal.models.JobDescription;
 import com.staffing.jobportal.models.JobProfiles;
+import com.staffing.jobportal.models.JobProfilesSubCat;
 import com.staffing.jobportal.models.ProfileDetails;
 import com.staffing.jobportal.models.ProfileSummary;
 import com.staffing.jobportal.models.SearchJob;
+import com.staffing.jobportal.models.Summary;
 import com.staffing.jobportal.service.ProfileService;
 
 import io.swagger.annotations.Api;
@@ -43,8 +49,72 @@ public class ProfileController {
 	@PostMapping("")
 	@ApiOperation("Get all profiles based on role and status")
 	public List<ProfileSummary> getAllProfiles(
-			@ApiParam(value = "Profile object to be added", required = true) @RequestBody SearchJob searchJob) {
-		List<ProfileSummary> profileList = profileService.getAllProfiles(searchJob);
+	// @ApiParam(value = "email", required = true) @RequestParam(value = "email")
+	// String email
+//            @ApiParam(value = "Role (Client or Interviewer)", required = true) @RequestParam(value = "role") String role,
+//            @ApiParam(value = "Created by (for Interviewer role)", required = false) @RequestParam(value = "createdBy", required = false) String createdBy,
+//            @ApiParam(value = "Status", required = true, allowableValues = "UPLOADED, SCREENED, PENDING_INTERVIEW, INTERVIEWED, SELECTED, RECRUITED, REJECTED")
+			@ApiParam(value = "Profile object to be added", required = true) @RequestBody SearchJob searchJob
+//            @RequestParam(value = "status") ProfileStatus status
+	) {
+
+		List<ProfileSummary> profileList = new ArrayList<ProfileSummary>();
+
+		ProfileSummary profileSummary = new ProfileSummary();
+		profileSummary.setProfileId("ee728662-7693-4444-ab1d-a84ffcdff8df");
+		profileSummary.setFirstName("Sachin");
+		profileSummary.setLastName("Ten");
+		profileSummary.setCurrentCompany("TCS");
+		profileSummary.setDesignation("Developer");
+		profileSummary.setCurrentCTC(23);
+		profileSummary.setExpectedCTC(30);
+		profileSummary.setOverallExp(10);
+		profileSummary.setRelevantExp(8);
+		profileSummary.setOverAllRating(4);
+		profileSummary.setLocation("Banglore");
+		profileList.add(profileSummary);
+
+		ProfileSummary profileSummary1 = new ProfileSummary();
+		profileSummary1.setProfileId("67dacf62-c323-4929-b44d-21985a362bc3");
+		profileSummary1.setFirstName("SachinA");
+		profileSummary1.setLastName("TenA");
+		profileSummary1.setCurrentCompany("WIPRO");
+		profileSummary1.setDesignation("Sr Developer");
+		profileSummary1.setCurrentCTC(35);
+		profileSummary1.setExpectedCTC(40);
+		profileSummary1.setOverallExp(15);
+		profileSummary1.setRelevantExp(12);
+		profileSummary1.setLocation("Mumbai");
+		profileSummary1.setOverAllRating(3);
+		profileList.add(profileSummary1);
+
+		ProfileSummary profileSummary2 = new ProfileSummary();
+		profileSummary2.setProfileId("831b4047-c10a-4642-8b7b-59de8df89f38");
+		profileSummary2.setFirstName("Rahul");
+		profileSummary2.setLastName("TenA");
+		profileSummary2.setCurrentCompany("TCS");
+		profileSummary2.setDesignation("DevOps");
+		profileSummary2.setCurrentCTC(25);
+		profileSummary2.setExpectedCTC(30);
+		profileSummary2.setOverallExp(5);
+		profileSummary2.setRelevantExp(5);
+		profileSummary2.setLocation("Hyderabad");
+		profileSummary2.setOverAllRating(3);
+		profileList.add(profileSummary2);
+
+		ProfileSummary profileSummary3 = new ProfileSummary();
+		profileSummary3.setProfileId("831b4047-c10a-4642-8b7b-59de8df89f38");
+		profileSummary3.setFirstName("Ramesh");
+		profileSummary3.setLastName("Tendulkar");
+		profileSummary3.setCurrentCompany("TEST");
+		profileSummary3.setDesignation("QA");
+		profileSummary3.setCurrentCTC(17);
+		profileSummary3.setExpectedCTC(23);
+		profileSummary3.setOverallExp(9);
+		profileSummary3.setRelevantExp(8);
+		profileSummary3.setOverAllRating(3);
+		profileList.add(profileSummary3);
+
 		return profileList;
 
 	}
@@ -54,6 +124,8 @@ public class ProfileController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "Profile created successfully"),
 			@ApiResponse(code = 400, message = "Invalid input data") })
 	public ResponseEntity<ProfileDetails> addProfile(
+			// @ApiParam(value = "email", required = true) @RequestParam(value = "email")
+			// String email,
 			@ApiParam(value = "Profile object to be added", required = true) @RequestBody ProfileDetails profile) {
 		ProfileDetails addedProfile = profileService.addProfile(profile);
 		return ResponseEntity.status(HttpStatus.CREATED).body(addedProfile);
@@ -63,26 +135,85 @@ public class ProfileController {
 	@ApiOperation("Get a profile by ID")
 	public ResponseEntity<ProfileDetails> getProfileById(
 			@ApiParam(value = "Profile ID", example = "1", required = true) @PathVariable String profileId) {
-		ProfileDetails profile = profileService.getProfileByProfileId(profileId);
-		if (profile != null) {
-			return ResponseEntity.ok(profile);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+		ProfileDetails profileDetails = new ProfileDetails();
+		
+		List<String> skills = new ArrayList<String>();
+		skills.add("AWS");
+		skills.add("Springboot");
+		Summary summary = new Summary();
+		summary.setSummary1("Summary 1");
+		summary.setSummary2("Summary 2");
+		summary.setSummary3("Summary 3");
+		summary.setSkills(skills);
+		
+
+		ExperienceDetails experienceDetails = new ExperienceDetails();
+		experienceDetails.setExpD1("Experiemnce 1");
+		experienceDetails.setExpD2("Experiemnce 2");
+		experienceDetails.setExpD3("Experiemnce 3");
+		experienceDetails.setExpD4("Experiemnce 4");
+
+		Feedback feedback = new Feedback();
+		feedback.setLongFeedback("Long Feed Back");
+		feedback.setShortFeedback("Short Feedback");
+
+		profileDetails.setProfileId("ee728662-7693-4444-ab1d-a84ffcdff8df");
+		profileDetails.setFirstName("Sachin");
+		profileDetails.setLastName("Ten");
+		profileDetails.setCurrentCompany("TCS");
+		profileDetails.setDesignation("Developer");
+		profileDetails.setCurrentCTC(23);
+		profileDetails.setExpectedCTC(30);
+		profileDetails.setOverallExp(10);
+		profileDetails.setRelevantExp(8);
+		profileDetails.setOverAllRating(4);
+		profileDetails.setLocation("Banglore");
+		profileDetails.setGender("Male");
+		profileDetails.setEmail("Sachin.ten@gmail.com");
+		profileDetails.setPhone("7418529635");
+		profileDetails.setDataEngR(4);
+		profileDetails.setProgrammingR(3);
+		profileDetails.setCloudEngR(5);
+		profileDetails.setCommunicationR(4);
+		profileDetails.setAttitudeR(4);
+		profileDetails.setOverAllRating(4);
+		List<String> cerList = new ArrayList<String>();
+		cerList.add(" Java Cer");
+		cerList.add("PMP");
+		profileDetails.setCertificationList(cerList);
+		List<String> jProfiles = new ArrayList<String>();
+		jProfiles.add("AWS");
+		jProfiles.add("Backend");
+		profileDetails.setJobProfile(jProfiles);
+		profileDetails.setSummary(summary);
+		profileDetails.setExperienceDetails(experienceDetails);
+		profileDetails.setFeedback(feedback);
+		profileDetails.setJobCategory("fultime");
+		profileDetails.setInterviewBy("Interviewer11");
+		profileDetails.setInterviewDateTime(LocalDateTime.now());
+		profileDetails.setManagedBy("Manager1");
+		
+		return ResponseEntity.ok(profileDetails);
+
 	}
 
 	@GetMapping("/jobDescription")
 	@ApiOperation("Get Job Description")
-	public ResponseEntity<JobDescription> getJobDescription(
+	public ResponseEntity<JobDescription> getProfileById(
 			@ApiParam(value = "Profile ID", example = "1", required = true) @RequestParam String jobCategory,
 			@ApiParam(value = "Profile ID", example = "1", required = true) @RequestParam String jobCategoryCode) {
-		JobDescription jobDescription = profileService.getJobDescription(jobCategory, jobCategoryCode);
+		JobDescription jobDescription = new JobDescription();
+		jobDescription.setJobCategoryCode("AzureDE");
+		jobDescription.setJobCategory("fulltimeTest");
+		jobDescription.setId("db15a007-138a-478a-a144-cc518c2c27af");
+		jobDescription.setJobDescriptionText(
+				"<h2 class=\"ql-align-center\"><strong><u>Job Description for Azure Data Engineer </u></strong></h2><p class=\"ql-align-center\"><br></p><p><strong><u>Technical Responsibility:</u></strong></p><p><br></p><ol><li data-list=\"ordered\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Design &amp; Develop ETL pipeline: Sound knowledge on design and develop Orchestration/workflow tools such as Azure data factory, Airflow, atabricks workflow</li><li data-list=\"ordered\"><span class=\"ql-ui\" contenteditable=\"false\"></span>etc.</li><li data-list=\"ordered\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Data Integration: Strong knowledge on different pattern of data integration such as CDC (change data capture) from transactional database sources, Rest API based source, SFTP sources, events/message from Kafka</li><li data-list=\"ordered\"><span class=\"ql-ui\" contenteditable=\"false\"></span>ETL Transformation: Strong knowledge of SQL, Python/scala from spark based jobbdevelopment keeping cost and performance of the jobs in the forefront.</li><li data-list=\"ordered\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Understanding of Azure Analytical services such as ADLS gen2, Synapse, SQL database to process and store data.</li><li data-list=\"ordered\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Data Modelling: Good understanding of dimensional modelling concepts and hands on with SCD type 1 and 2.</li><li data-list=\"ordered\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Monitoring and Logging: In depth acumen to troubleshoot and diagnose any failures and resource optimization for ETL process in Spark, Databricks or any</li><li data-list=\"ordered\"><span class=\"ql-ui\" contenteditable=\"false\"></span>databases.</li><li data-list=\"ordered\"><span class=\"ql-ui\" contenteditable=\"false\"></span>CI/CD/CT: Good understanding of code integration, deployment and testing before</li><li data-list=\"ordered\"><span class=\"ql-ui\" contenteditable=\"false\"></span>moving the code to Production.</li></ol><p><br></p><p><strong><u>Qualification required:</u></strong></p><p><br></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Experience: 4 - 8 Years</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Education: Bachelor’s degree in computer science, Information Technology or related fields. Master’s degree is an added advantage.</li></ol><p><br></p><p><strong><u>Skillset:</u></strong></p><p><br></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Proficiency in Azure Data factory, Airflow, Azure SQl Database, Synapse Analytics, Azure Analysis service, ADLS Gen2 storage.</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Good hands on on language such as SQL, Python, Scala</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Experience on Big data technologies such as OSS Spark, Databricks, Data warehouse etc</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Extensive knowledge of data formats such as Parquet, Avro,ORC etc</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Hands on with Delta, Iceberg table formats</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Familiarity with Azure DevOPS, Github and github actions.</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Good to have strong MSBI reporting skills.</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Good to have worked on data visualization tools such as POWERBI or Tableu etc.</li></ol>");
 		return ResponseEntity.ok(jobDescription);
 	}
-	
+
 	@PostMapping("/add/jobDescription")
 	@ApiOperation("Get Job Description")
-	public ResponseEntity<Boolean> addJobDescription(
+	public ResponseEntity<Boolean> addProfileById(
 			@ApiParam(value = "Job Description", example = "1", required = true) @RequestBody JobDescription jobDescription) {
 		boolean addStatus = false;
 		addStatus = profileService.addJobDescription(jobDescription);
@@ -93,7 +224,103 @@ public class ProfileController {
 	@ApiOperation("Get a profile by ID")
 	public ResponseEntity<List<JobProfiles>> getJobProfiles(
 			@ApiParam(value = "Profile ID", example = "1", required = true) @RequestParam String jobCategory) {
-		List<JobProfiles> jobProfiles = profileService.getJobProfiles(jobCategory);
+		List<JobProfiles> jobProfiles = new ArrayList<JobProfiles>();
+
+		JobProfiles jobProfile = new JobProfiles();
+		jobProfile.setId("sedfvfsddfsf");
+		jobProfile.setCategoryCode("Cloud");
+		jobProfile.setCategoryDisplay("Cloud");
+		jobProfile.setCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+
+		List<JobProfilesSubCat> jobProfilesSubCats = new ArrayList<JobProfilesSubCat>();
+
+		JobProfilesSubCat jobProfilesSubCat = new JobProfilesSubCat();
+		jobProfilesSubCat.setSubCategoryCode("AzureDE");
+		jobProfilesSubCat.setSubCategoryDisplay("Azure Data Engineer");
+		jobProfilesSubCat.setSubCategoryDesc("Description Azure Data Engineer");
+		jobProfilesSubCat.setSubCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+		jobProfilesSubCats.add(jobProfilesSubCat);
+
+		JobProfilesSubCat jobProfilesSubCat1 = new JobProfilesSubCat();
+		jobProfilesSubCat1.setSubCategoryCode("AWSDE");
+		jobProfilesSubCat1.setSubCategoryDisplay("AWS Data Engineer");
+		jobProfilesSubCat1.setSubCategoryDesc("Description AWS Data Engineer");
+		jobProfilesSubCat1.setSubCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+		jobProfilesSubCats.add(jobProfilesSubCat1);
+
+		JobProfilesSubCat jobProfilesSubCat2 = new JobProfilesSubCat();
+		jobProfilesSubCat2.setSubCategoryCode("GCPDE");
+		jobProfilesSubCat2.setSubCategoryDisplay("GCP Data Engineer");
+		jobProfilesSubCat2.setSubCategoryDesc("Description GCP  Data Engineer");
+		jobProfilesSubCat2.setSubCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+		jobProfilesSubCats.add(jobProfilesSubCat2);
+
+		JobProfilesSubCat jobProfilesSubCat3 = new JobProfilesSubCat();
+		jobProfilesSubCat3.setSubCategoryCode("ANYCDE");
+		jobProfilesSubCat3.setSubCategoryDisplay("ANY Cloud Data Engineer");
+		jobProfilesSubCat3.setSubCategoryDesc("Description ANY  Data Engineer");
+		jobProfilesSubCat3.setSubCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+		jobProfilesSubCats.add(jobProfilesSubCat3);
+
+		JobProfilesSubCat jobProfilesSubCat4 = new JobProfilesSubCat();
+		jobProfilesSubCat4.setSubCategoryCode("MULTICDE");
+		jobProfilesSubCat4.setSubCategoryDisplay("MULTI Data Engineer");
+		jobProfilesSubCat4.setSubCategoryDesc("Description MULTI Data Engineer");
+		jobProfilesSubCat4.setSubCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+		jobProfilesSubCats.add(jobProfilesSubCat4);
+
+		JobProfilesSubCat jobProfilesSubCat5 = new JobProfilesSubCat();
+		jobProfilesSubCat5.setSubCategoryCode("NOCDE");
+		jobProfilesSubCat5.setSubCategoryDisplay("NO Data Engineer");
+		jobProfilesSubCat5.setSubCategoryDesc("Description NO Data Engineer");
+		jobProfilesSubCat5.setSubCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+		jobProfilesSubCats.add(jobProfilesSubCat5);
+
+		jobProfile.setJobProfilesSubCats(jobProfilesSubCats);
+		jobProfiles.add(jobProfile);
+
+		JobProfiles jobProfile1 = new JobProfiles();
+		jobProfile1.setId("sedfvfsddfsf");
+		jobProfile1.setCategoryCode("DataAI");
+		jobProfile1.setCategoryDisplay("DATA & AI");
+		jobProfile1.setCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+		jobProfiles.add(jobProfile1);
+
+		JobProfiles jobProfile2 = new JobProfiles();
+		jobProfile2.setId("sedfvfsddfsf");
+		jobProfile2.setCategoryCode("FullStack");
+		jobProfile2.setCategoryDisplay("Full Stack");
+		jobProfile2.setCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+		jobProfiles.add(jobProfile2);
+
+		JobProfiles jobProfile3 = new JobProfiles();
+		jobProfile3.setId("sedfvfsddfsf");
+		jobProfile3.setCategoryCode("QA");
+		jobProfile3.setCategoryDisplay("Quality Assurance");
+		jobProfile3.setCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+		jobProfiles.add(jobProfile3);
+
+		JobProfiles jobProfile4 = new JobProfiles();
+		jobProfile4.setId("sedfvfsddfsf");
+		jobProfile4.setCategoryCode("QA");
+		jobProfile4.setCategoryDisplay("Quality Assurance");
+		jobProfile4.setCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+		jobProfiles.add(jobProfile4);
+
+		JobProfiles jobProfile5 = new JobProfiles();
+		jobProfile5.setId("sedfvfsddfsf");
+		jobProfile5.setCategoryCode("CRM");
+		jobProfile5.setCategoryDisplay("Customer Relationship Management");
+		jobProfile5.setCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+		jobProfiles.add(jobProfile5);
+
+		JobProfiles jobProfile6 = new JobProfiles();
+		jobProfile6.setId("sedfvfsddfsf");
+		jobProfile6.setCategoryCode("DevOps");
+		jobProfile6.setCategoryDisplay("Development and Operation");
+		jobProfile6.setCategoryIcon("https://i.imgur.com/6NKPrhO.png");
+		jobProfiles.add(jobProfile6);
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(jobProfiles);
 	}
 
@@ -107,9 +334,60 @@ public class ProfileController {
 
 	@GetMapping("/clientSelected")
 	@ApiOperation("Get profiles with selected status by client")
-	public List<ProfileDetails> getProfilesClientSelected(
+	public List<ProfileSummary> getProfilesClientSelected(
 			@ApiParam(value = "email", required = true) @RequestParam(value = "email") String email) {
-		List<ProfileDetails> profileList = profileService.getProfilesClientSelected(email);
+		List<ProfileSummary> profileList = new ArrayList<ProfileSummary>();
+
+		ProfileSummary profileSummary = new ProfileSummary();
+
+		profileSummary.setProfileId("ee728662-7693-4444-ab1d-a84ffcdff8df");
+		profileSummary.setFirstName("Sachin");
+		profileSummary.setLastName("Ten");
+		profileSummary.setCurrentCompany("TCS");
+		profileSummary.setDesignation("Developer");
+		profileSummary.setCurrentCTC(23);
+		profileSummary.setExpectedCTC(30);
+		profileSummary.setOverallExp(10);
+		profileSummary.setRelevantExp(8);
+		profileSummary.setOverAllRating(4);
+		profileList.add(profileSummary);
+
+		profileSummary.setProfileId("67dacf62-c323-4929-b44d-21985a362bc3");
+		profileSummary.setFirstName("SachinA");
+		profileSummary.setLastName("TenA");
+		profileSummary.setCurrentCompany("WIPRO");
+		profileSummary.setDesignation("Sr Developer");
+		profileSummary.setCurrentCTC(35);
+		profileSummary.setExpectedCTC(40);
+		profileSummary.setOverallExp(15);
+		profileSummary.setRelevantExp(12);
+		profileSummary.setOverAllRating(3);
+		profileList.add(profileSummary);
+
+		profileSummary.setProfileId("831b4047-c10a-4642-8b7b-59de8df89f38");
+		profileSummary.setFirstName("Rahul");
+		profileSummary.setLastName("TenA");
+		profileSummary.setCurrentCompany("TCS");
+		profileSummary.setDesignation("DevOps");
+		profileSummary.setCurrentCTC(25);
+		profileSummary.setExpectedCTC(30);
+		profileSummary.setOverallExp(5);
+		profileSummary.setRelevantExp(5);
+		profileSummary.setOverAllRating(3);
+		profileList.add(profileSummary);
+
+		profileSummary.setProfileId("831b4047-c10a-4642-8b7b-59de8df89f38");
+		profileSummary.setFirstName("Ramesh");
+		profileSummary.setLastName("TenA");
+		profileSummary.setCurrentCompany("TEST");
+		profileSummary.setDesignation("QA");
+		profileSummary.setCurrentCTC(17);
+		profileSummary.setExpectedCTC(23);
+		profileSummary.setOverallExp(9);
+		profileSummary.setRelevantExp(8);
+		profileSummary.setOverAllRating(3);
+		profileList.add(profileSummary);
+
 		return profileList;
 	}
 
