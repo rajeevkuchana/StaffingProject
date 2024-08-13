@@ -180,7 +180,7 @@ public class ProfileServiceImpl implements ProfileService {
 	public List<JobProfiles> getJobProfiles(String jobCategory) {
 		List<JobProfiles> jobProfiles = null;
 		try {
-			jobProfiles = jobProfileRepo.findAll();
+			jobProfiles = jobProfileRepo.findByJobCategory(jobCategory);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

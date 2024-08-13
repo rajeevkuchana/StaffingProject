@@ -9,16 +9,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class JobProfiles {
 
 	private String id;
-	
+
+	private String jobCategory;
+
 	private String categoryCode;
-	
+
 	private String categoryDisplay;
-	
+
 	private String CategoryDescriptions;
-	
+
 	private String categoryIcon;
-	
-	private List<JobProfilesSubCat>  jobProfilesSubCats;
+
+	private List<JobProfilesSubCat> jobProfilesSubCats;
 
 	public String getId() {
 		return id;
@@ -26,6 +28,14 @@ public class JobProfiles {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getJobCategory() {
+		return jobCategory;
+	}
+
+	public void setJobCategory(String jobCategory) {
+		this.jobCategory = jobCategory;
 	}
 
 	public String getCategoryCode() {
@@ -67,6 +77,5 @@ public class JobProfiles {
 	public void setJobProfilesSubCats(List<JobProfilesSubCat> jobProfilesSubCats) {
 		this.jobProfilesSubCats = jobProfilesSubCats;
 	}
-
 
 }

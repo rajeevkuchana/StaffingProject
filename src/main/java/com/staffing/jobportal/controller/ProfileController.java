@@ -73,7 +73,7 @@ public class ProfileController {
 
 	@GetMapping("/jobDescription")
 	@ApiOperation("Get Job Description")
-	public ResponseEntity<JobDescription> getProfileById(
+	public ResponseEntity<JobDescription> getJobDescription(
 			@ApiParam(value = "Profile ID", example = "1", required = true) @RequestParam String jobCategory,
 			@ApiParam(value = "Profile ID", example = "1", required = true) @RequestParam String jobCategoryCode) {
 		JobDescription jobDescription = profileService.getJobDescription(jobCategory, jobCategoryCode);
@@ -82,7 +82,7 @@ public class ProfileController {
 	
 	@PostMapping("/add/jobDescription")
 	@ApiOperation("Get Job Description")
-	public ResponseEntity<Boolean> addProfileById(
+	public ResponseEntity<Boolean> addJobDescription(
 			@ApiParam(value = "Job Description", example = "1", required = true) @RequestBody JobDescription jobDescription) {
 		boolean addStatus = false;
 		addStatus = profileService.addJobDescription(jobDescription);
