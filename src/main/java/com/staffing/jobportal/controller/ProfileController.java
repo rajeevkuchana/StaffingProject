@@ -127,25 +127,16 @@ public class ProfileController {
 			// @ApiParam(value = "email", required = true) @RequestParam(value = "email")
 			// String email,
 			@ApiParam(value = "Profile object to be added", required = true) @RequestBody ProfileDetails profile) {
-		ProfileDetails addedProfile = profileService.addProfile(profile);
-		return ResponseEntity.status(HttpStatus.CREATED).body(addedProfile);
-	}
-
-	@GetMapping("/{profileId}")
-	@ApiOperation("Get a profile by ID")
-	public ResponseEntity<ProfileDetails> getProfileById(
-			@ApiParam(value = "Profile ID", example = "1", required = true) @PathVariable String profileId) {
 		ProfileDetails profileDetails = new ProfileDetails();
-		
-		List<String> skills = new ArrayList<String>();
-		skills.add("AWS");
-		skills.add("Springboot");
+		List<String> jProfiles = new ArrayList<String>();
+		jProfiles.add("AWS");
+		jProfiles.add("Backend");
+		jProfiles.add("Springboot");
 		Summary summary = new Summary();
 		summary.setSummary1("Summary 1");
 		summary.setSummary2("Summary 2");
 		summary.setSummary3("Summary 3");
-		summary.setSkills(skills);
-		
+		summary.setSkills(jProfiles);
 
 		ExperienceDetails experienceDetails = new ExperienceDetails();
 		experienceDetails.setExpD1("Experiemnce 1");
@@ -178,12 +169,9 @@ public class ProfileController {
 		profileDetails.setAttitudeR(4);
 		profileDetails.setOverAllRating(4);
 		List<String> cerList = new ArrayList<String>();
-		cerList.add(" Java Cer");
+		cerList.add("Java Cer");
 		cerList.add("PMP");
 		profileDetails.setCertificationList(cerList);
-		List<String> jProfiles = new ArrayList<String>();
-		jProfiles.add("AWS");
-		jProfiles.add("Backend");
 		profileDetails.setJobProfile(jProfiles);
 		profileDetails.setSummary(summary);
 		profileDetails.setExperienceDetails(experienceDetails);
@@ -192,7 +180,67 @@ public class ProfileController {
 		profileDetails.setInterviewBy("Interviewer11");
 		profileDetails.setInterviewDateTime(LocalDateTime.now());
 		profileDetails.setManagedBy("Manager1");
-		
+		return ResponseEntity.status(HttpStatus.CREATED).body(profileDetails);
+	}
+
+	@GetMapping("/{profileId}")
+	@ApiOperation("Get a profile by ID")
+	public ResponseEntity<ProfileDetails> getProfileById(
+			@ApiParam(value = "Profile ID", example = "1", required = true) @PathVariable String profileId) {
+		ProfileDetails profileDetails = new ProfileDetails();
+		List<String> jProfiles = new ArrayList<String>();
+		jProfiles.add("AWS");
+		jProfiles.add("Backend");
+		jProfiles.add("Springboot");
+		Summary summary = new Summary();
+		summary.setSummary1("Summary 1");
+		summary.setSummary2("Summary 2");
+		summary.setSummary3("Summary 3");
+		summary.setSkills(jProfiles);
+
+		ExperienceDetails experienceDetails = new ExperienceDetails();
+		experienceDetails.setExpD1("Experiemnce 1");
+		experienceDetails.setExpD2("Experiemnce 2");
+		experienceDetails.setExpD3("Experiemnce 3");
+		experienceDetails.setExpD4("Experiemnce 4");
+
+		Feedback feedback = new Feedback();
+		feedback.setLongFeedback("Long Feed Back");
+		feedback.setShortFeedback("Short Feedback");
+
+		profileDetails.setProfileId("ee728662-7693-4444-ab1d-a84ffcdff8df");
+		profileDetails.setFirstName("Sachin");
+		profileDetails.setLastName("Ten");
+		profileDetails.setCurrentCompany("TCS");
+		profileDetails.setDesignation("Developer");
+		profileDetails.setCurrentCTC(23);
+		profileDetails.setExpectedCTC(30);
+		profileDetails.setOverallExp(10);
+		profileDetails.setRelevantExp(8);
+		profileDetails.setOverAllRating(4);
+		profileDetails.setLocation("Banglore");
+		profileDetails.setGender("Male");
+		profileDetails.setEmail("Sachin.ten@gmail.com");
+		profileDetails.setPhone("7418529635");
+		profileDetails.setDataEngR(4);
+		profileDetails.setProgrammingR(3);
+		profileDetails.setCloudEngR(5);
+		profileDetails.setCommunicationR(4);
+		profileDetails.setAttitudeR(4);
+		profileDetails.setOverAllRating(4);
+		List<String> cerList = new ArrayList<String>();
+		cerList.add("Java Cer");
+		cerList.add("PMP");
+		profileDetails.setCertificationList(cerList);
+		profileDetails.setJobProfile(jProfiles);
+		profileDetails.setSummary(summary);
+		profileDetails.setExperienceDetails(experienceDetails);
+		profileDetails.setFeedback(feedback);
+		profileDetails.setJobCategory("fultime");
+		profileDetails.setInterviewBy("Interviewer11");
+		profileDetails.setInterviewDateTime(LocalDateTime.now());
+		profileDetails.setManagedBy("Manager1");
+
 		return ResponseEntity.ok(profileDetails);
 
 	}
