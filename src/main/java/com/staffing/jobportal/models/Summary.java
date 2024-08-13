@@ -1,5 +1,7 @@
 package com.staffing.jobportal.models;
 
+import java.util.List;
+
 public class Summary {
 
 	private String summary1;
@@ -8,7 +10,7 @@ public class Summary {
 	
 	private String summary3;
 	
-	private String summary4;
+	private List<String> skills;
 	
 	public String getSummary1() {
 		return summary1;
@@ -28,13 +30,11 @@ public class Summary {
 	public void setSummary3(String summary3) {
 		this.summary3 = summary3;
 	}
-	public String getSummary4() {
-		return summary4;
+	public List<String> getSkills() {
+		return skills;
 	}
-	public void setSummary4(String summary4) {
-		this.summary4 = summary4;
+	public void setSkills(List<String> skills) {
+		this.skills = skills;
 	}
-	
-	
 
 }
