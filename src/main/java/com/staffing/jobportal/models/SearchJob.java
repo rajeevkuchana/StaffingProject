@@ -10,7 +10,7 @@ public class SearchJob {
 	
 	private String experienceRange;
 	
-	private String noticePeriod;
+	private int noticePeriod;
 	
 	private int budget;
 	
@@ -25,16 +25,16 @@ public class SearchJob {
 		this.experienceRange = experienceRange;
 	}
 
-	public String getNoticePeriod() {
+	public int getBudget() {
+		return budget;
+	}
+
+	public int getNoticePeriod() {
 		return noticePeriod;
 	}
 
-	public void setNoticePeriod(String noticePeriod) {
+	public void setNoticePeriod(int noticePeriod) {
 		this.noticePeriod = noticePeriod;
-	}
-
-	public int getBudget() {
-		return budget;
 	}
 
 	public void setBudget(int budget) {

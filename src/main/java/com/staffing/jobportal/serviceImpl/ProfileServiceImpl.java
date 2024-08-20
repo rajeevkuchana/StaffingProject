@@ -48,17 +48,52 @@ public class ProfileServiceImpl implements ProfileService {
 		String email = searchJob.getEmail();
 		User user = null;
 		String company = null;
-
+		int startExp = 0;
+		int endExp = 0;
+		int budget = 0;
 		try {
 			user = userRepository.findByEmail(email);
+			if (null != searchJob && null != searchJob.getExperienceRange()) {
+				if (searchJob.getExperienceRange().equalsIgnoreCase("exRange00")
+						|| searchJob.getExperienceRange().equalsIgnoreCase("")) {
+					startExp = 0;
+					endExp = 50;
+				} else if (searchJob.getExperienceRange().equalsIgnoreCase("exRange01")) {
+					startExp = 0;
+					endExp = 5;
+				} else if (searchJob.getExperienceRange().equalsIgnoreCase("exRange02")) {
+					startExp = 5;
+					endExp = 10;
+				} else if (searchJob.getExperienceRange().equalsIgnoreCase("exRange03")) {
+					startExp = 10;
+					endExp = 50;
+				}
+			}
+			if(searchJob.getBudget() == 0) {
+				budget = 200;
+			}else {
+				budget = searchJob.getBudget();
+			}
 			if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Client")) {
 				company = user.getCompany();
-				if (null != searchJob.getJobProfile() && searchJob.getJobProfile().size() > 0) {
-
+				if (null != searchJob.getJobProfile() && searchJob.getJobProfile().size() > 0
+						&& searchJob.getNoticePeriod() == 0) {
 					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(),
-							searchJob.getJobProfile(), company);
-				} else {
-					profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), company);
+							searchJob.getJobProfile(), company, startExp, endExp, budget);
+
+				} else if (null != searchJob.getJobProfile() && searchJob.getJobProfile().size() > 0
+						&& !(searchJob.getNoticePeriod() == 0)) {
+					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(),
+							searchJob.getJobProfile(), company, startExp, endExp, searchJob.getNoticePeriod() , budget);
+
+				} else if (null != searchJob.getJobProfile() && !(searchJob.getJobProfile().size() > 0)
+						&& (searchJob.getNoticePeriod() == 0)) {
+					profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), company, startExp,
+							endExp, budget);
+				} else if (null != searchJob.getJobProfile() && !(searchJob.getJobProfile().size() > 0)
+						&& !(searchJob.getNoticePeriod() == 0)) {
+					profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), company, startExp, endExp,
+							searchJob.getNoticePeriod(), budget);
 				}
 				Iterator<ProfileDetails> itr1 = profiles.iterator();
 				while (itr1.hasNext()) {
@@ -89,6 +124,8 @@ public class ProfileServiceImpl implements ProfileService {
 					profilSummary.setProfileId(profileDetails.getProfileId());
 					profilSummary.setFirstName(profileDetails.getFirstName());
 					profilSummary.setLastName(profileDetails.getLastName());
+					profilSummary.setPhone(profileDetails.getPhone());
+					profilSummary.setEmail(profileDetails.getEmail());
 					profilSummary.setCurrentCompany(profileDetails.getCurrentCompany());
 					profilSummary.setDesignation(profileDetails.getDesignation());
 					profilSummary.setLocation(profileDetails.getLocation());
