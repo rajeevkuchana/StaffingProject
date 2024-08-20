@@ -15,6 +15,8 @@ public class ProfileDetails {
 	private String firstName;
 	private String gender;
 	private String lastName;
+	private String education;
+	private String nationality;
 	private String email;
 	private String phone;
 	private String location;
@@ -47,6 +49,19 @@ public class ProfileDetails {
 	private int noticePeriod;
 	private LocalDateTime selectedDateTime;
 	
+	
+	public String getEducation() {
+		return education;
+	}
+	public void setEducation(String education) {
+		this.education = education;
+	}
+	public String getNationality() {
+		return nationality;
+	}
+	public void setNationality(String nationality) {
+		this.nationality = nationality;
+	}
 	public String getProfileId() {
 		return profileId;
 	}

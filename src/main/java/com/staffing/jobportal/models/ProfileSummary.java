@@ -15,6 +15,33 @@ public class ProfileSummary {
 	private int overallExp;
 	private int relevantExp;
 	private double overAllRating;
+	private String jobCategory;
+	private String company;
+	private String selectedBy;
+	
+	public String getSelectedBy() {
+		return selectedBy;
+	}
+
+	public void setSelectedBy(String selectedBy) {
+		this.selectedBy = selectedBy;
+	}
+
+	public String getJobCategory() {
+		return jobCategory;
+	}
+
+	public void setJobCategory(String jobCategory) {
+		this.jobCategory = jobCategory;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
 
 	public String getProfileId() {
 		return profileId;

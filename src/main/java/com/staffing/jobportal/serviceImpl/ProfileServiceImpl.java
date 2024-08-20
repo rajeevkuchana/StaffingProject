@@ -1,5 +1,6 @@
 package com.staffing.jobportal.serviceImpl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,23 +35,23 @@ public class ProfileServiceImpl implements ProfileService {
 
 	@Autowired
 	private JobDescriptionRepo jobDescriptionRepo;
-	
+
 	@Autowired
 	private JobProfileRepo jobProfileRepo;
 
 	@Override
 	public List<ProfileSummary> getAllProfiles(SearchJob searchJob) {
 
-		
 		List<ProfileSummary> profileSummaryList = new ArrayList<>();
-		
+
 		List<ProfileDetails> profiles = null;
 		String email = searchJob.getEmail();
 		User user = null;
 		String company = null;
 
 		try {
-				user = userRepository.findByEmail(email);
+			user = userRepository.findByEmail(email);
+			if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Client")) {
 				company = user.getCompany();
 				if (null != searchJob.getJobProfile() && searchJob.getJobProfile().size() > 0) {
 
@@ -59,10 +60,9 @@ public class ProfileServiceImpl implements ProfileService {
 				} else {
 					profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), company);
 				}
-
-				Iterator<ProfileDetails> itr = profiles.iterator();
-				while (itr.hasNext()) {
-					ProfileDetails profileDetails = itr.next();
+				Iterator<ProfileDetails> itr1 = profiles.iterator();
+				while (itr1.hasNext()) {
+					ProfileDetails profileDetails = itr1.next();
 					ProfileSummary profilSummary = new ProfileSummary();
 					profilSummary.setProfileId(profileDetails.getProfileId());
 					profilSummary.setFirstName(profileDetails.getFirstName());
@@ -78,7 +78,30 @@ public class ProfileServiceImpl implements ProfileService {
 
 					profileSummaryList.add(profilSummary);
 				}
-		
+			} else if (null != user && null != user.getRole()
+					&& (user.getRole().equalsIgnoreCase("Recruiter") || user.getRole().equalsIgnoreCase("Admin"))) {
+
+				profiles = profileDetailsRepo.findAll();
+				Iterator<ProfileDetails> itr2 = profiles.iterator();
+				while (itr2.hasNext()) {
+					ProfileDetails profileDetails = itr2.next();
+					ProfileSummary profilSummary = new ProfileSummary();
+					profilSummary.setProfileId(profileDetails.getProfileId());
+					profilSummary.setFirstName(profileDetails.getFirstName());
+					profilSummary.setLastName(profileDetails.getLastName());
+					profilSummary.setCurrentCompany(profileDetails.getCurrentCompany());
+					profilSummary.setDesignation(profileDetails.getDesignation());
+					profilSummary.setLocation(profileDetails.getLocation());
+					profilSummary.setCurrentCTC(profileDetails.getCurrentCTC());
+					profilSummary.setExpectedCTC(profileDetails.getExpectedCTC());
+					profilSummary.setOverallExp(profileDetails.getOverallExp());
+					profilSummary.setRelevantExp(profileDetails.getRelevantExp());
+					profilSummary.setOverAllRating(profileDetails.getOverAllRating());
+					profilSummary.setJobCategory(profileDetails.getJobCategory());
+					profilSummary.setSelectedBy(profileDetails.getSelectedBy());
+					profileSummaryList.add(profilSummary);
+				}
+			}
 		} catch (JsonParseException jsonException) {
 			jsonException.printStackTrace();
 		} catch (Exception e) {
@@ -164,12 +187,23 @@ public class ProfileServiceImpl implements ProfileService {
 	@Override
 	public boolean selectProfile(String profileId, String selectedBy) {
 		boolean selectStatus = false;
+		Long deleteStatusL = 0L;
 		ProfileDetails profile = null;
+		User user = null;
 		try {
-			profile = profileDetailsRepo.findByProfileId(profileId);
-			profile.setSelectedBy(selectedBy);
-			profileDetailsRepo.save(profile);
-			selectStatus = true;
+			user = userRepository.findByEmail(selectedBy);
+			if (null != user && null != user.getCompany()) {
+				profile = profileDetailsRepo.findByProfileId(profileId);
+				if (null != profile) {
+					deleteStatusL = profileDetailsRepo.deleteByProfileId(profile.getProfileId());
+					if (null != deleteStatusL) {
+						profile.setSelectedBy(user.getCompany());
+						profile.setSelectedDateTime(LocalDateTime.now());
+						profileDetailsRepo.save(profile);
+						selectStatus = true;
+					}
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -181,13 +215,13 @@ public class ProfileServiceImpl implements ProfileService {
 		List<JobProfiles> jobProfiles = null;
 		try {
 			jobProfiles = jobProfileRepo.findByJobCategory(jobCategory);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return jobProfiles;
 	}
-	
+
 	@Override
 	public boolean addJobProfiles(JobProfiles jobProfiles) {
 		boolean addStatus = false;
@@ -206,10 +240,10 @@ public class ProfileServiceImpl implements ProfileService {
 		JobDescription jobDescription = null;
 		try {
 			jobDescription = jobDescriptionRepo.findByCategory(jobCategory, jobCategoryCode);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return jobDescription;
 	}
 
