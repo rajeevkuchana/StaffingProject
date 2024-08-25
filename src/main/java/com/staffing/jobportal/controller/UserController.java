@@ -35,12 +35,12 @@ public class UserController {
 	@PostMapping("/user/add")
 	public ResponseEntity<String> addUser(@RequestBody User user) {
 		String createStatus = userService.addUser(user);
-		if(createStatus.equals("")) {
+		if (createStatus.equals("")) {
 			return ResponseEntity.status(HttpStatus.OK).body(createStatus);
-		}else {
+		} else {
 			return ResponseEntity.status(HttpStatus.OK).body(createStatus);
 		}
-		
+
 	}
 
 	@DeleteMapping("/user/delete/{userId}")
@@ -49,23 +49,24 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body(deleteStatus);
 	}
 
-
 	@PostMapping("/user/verify")
 	public ResponseEntity<User> verifyUser(
 			@ApiParam(value = "Profile object to be added", required = true) @RequestBody UserLogin userLogin) {
-		User user = new User();
-		user.setCompany("Wipro");
-		user.setEmail("test@test.com");
-		user.setId("dfsdfsdffsdfsdfsdfsd");
-		user.setPassword("password");
-		user.setRole("Client");
-		user.setUsername("Sample Test");
-	
+
+		User user = null;
+		if (userLogin.getEmail().equalsIgnoreCase("Kushi@gmail.com")
+				&& userLogin.getPassword().equalsIgnoreCase("12345")) {
+			user = new User();
+			user.setCompany("Wipro");
+			user.setEmail("test@test.com");
+			user.setId("dfsdfsdffsdfsdfsdfsd");
+			user.setPassword("password");
+			user.setRole("Client");
+			user.setUsername("Sample Test");
+		}
 		return ResponseEntity.status(HttpStatus.OK).body(user);
 
 	}
-
-
 
 	@GetMapping("users")
 	public ResponseEntity<List<User>> getAllUser() {
