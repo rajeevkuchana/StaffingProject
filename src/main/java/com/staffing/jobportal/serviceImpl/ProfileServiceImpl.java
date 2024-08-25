@@ -161,8 +161,12 @@ public class ProfileServiceImpl implements ProfileService {
 	@Override
 	public List<ProfileDetails> getProfilesClientSelected(String selectedBy) {
 		List<ProfileDetails> profilesList = new ArrayList<ProfileDetails>();
+		User user = null;
 		try {
-			profilesList = profileDetailsRepo.findAllBySelectedBy(selectedBy);
+			user = userRepository.findByEmail(selectedBy);
+			if(null != user && null != user.getCompany()) {
+				profilesList = profileDetailsRepo.findAllBySelectedBy(user.getCompany());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
