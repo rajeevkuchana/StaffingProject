@@ -17,6 +17,7 @@ import com.staffing.jobportal.models.JobProfiles;
 import com.staffing.jobportal.models.ProfileDetails;
 import com.staffing.jobportal.models.ProfileSummary;
 import com.staffing.jobportal.models.SearchJob;
+import com.staffing.jobportal.models.Summary;
 import com.staffing.jobportal.models.User;
 import com.staffing.jobportal.repo.JobDescriptionRepo;
 import com.staffing.jobportal.repo.JobProfileRepo;
@@ -69,9 +70,9 @@ public class ProfileServiceImpl implements ProfileService {
 					endExp = 50;
 				}
 			}
-			if(searchJob.getBudget() == 0) {
+			if (searchJob.getBudget() == 0) {
 				budget = 200;
-			}else {
+			} else {
 				budget = searchJob.getBudget();
 			}
 			if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Client")) {
@@ -84,12 +85,12 @@ public class ProfileServiceImpl implements ProfileService {
 				} else if (null != searchJob.getJobProfile() && searchJob.getJobProfile().size() > 0
 						&& !(searchJob.getNoticePeriod() == 0)) {
 					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(),
-							searchJob.getJobProfile(), company, startExp, endExp, searchJob.getNoticePeriod() , budget);
+							searchJob.getJobProfile(), company, startExp, endExp, searchJob.getNoticePeriod(), budget);
 
 				} else if (null != searchJob.getJobProfile() && !(searchJob.getJobProfile().size() > 0)
 						&& (searchJob.getNoticePeriod() == 0)) {
-					profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), company, startExp,
-							endExp, budget);
+					profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), company, startExp, endExp,
+							budget);
 				} else if (null != searchJob.getJobProfile() && !(searchJob.getJobProfile().size() > 0)
 						&& !(searchJob.getNoticePeriod() == 0)) {
 					profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), company, startExp, endExp,
@@ -164,7 +165,7 @@ public class ProfileServiceImpl implements ProfileService {
 		User user = null;
 		try {
 			user = userRepository.findByEmail(selectedBy);
-			if(null != user && null != user.getCompany()) {
+			if (null != user && null != user.getCompany()) {
 				profilesList = profileDetailsRepo.findAllBySelectedBy(user.getCompany());
 			}
 		} catch (Exception e) {
@@ -183,6 +184,10 @@ public class ProfileServiceImpl implements ProfileService {
 			OptionalDouble res = doubleStream.average();
 			profile.setOverAllRating(res.getAsDouble());
 
+			Summary summary = profile.getSummary();
+			if (null != summary && null != summary.getSkills()) {
+				profile.setJobProfile(summary.getSkills());
+			}
 			profileDetailsRepo.save(profile);
 		} catch (Exception e) {
 			e.printStackTrace();
