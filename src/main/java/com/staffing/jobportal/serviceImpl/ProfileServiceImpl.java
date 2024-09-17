@@ -186,11 +186,13 @@ public class ProfileServiceImpl implements ProfileService {
 			if (null == profile.getJobCategory()) {
 				profile.setJobCategory("fulltime");
 			}
-
+			
 			Summary summary = profile.getSummary();
 			if (null != summary && null != summary.getSkills()) {
+				summary.getSkills().add(profile.getDesignation());
 				profile.setJobProfile(summary.getSkills());
 			}
+			
 			profileDetailsRepo.save(profile);
 		} catch (Exception e) {
 			e.printStackTrace();
