@@ -22,7 +22,7 @@ public interface ProfileDetailsRepo extends MongoRepository<ProfileDetails, Stri
 	List<ProfileDetails> findAllByJobCat(String jobCategory, String currentCompany, int startExp, int endExp,
 			int budget) throws JsonParseException;
 
-	@Query("{jobCategory: ?0, jobProfile : { $in : ?1}, currentCompany : {$ne : ?2}, overallExp : {$gte : ?3, $lte : ?4},  expectedCTC : {$lte : ?5}, selectedBy  : null}")
+	@Query("{jobCategory: ?0, jobProfile : { $all : ?1}, currentCompany : {$ne : ?2}, overallExp : {$gte : ?3, $lte : ?4},  expectedCTC : {$lte : ?5}, selectedBy  : null}")
 	List<ProfileDetails> findAllByfilterCriteria(String jobCategory, List<String> jobProfile, String currentCompany,
 			int startExp, int endExp, int budget) throws JsonParseException;
 
@@ -30,7 +30,7 @@ public interface ProfileDetailsRepo extends MongoRepository<ProfileDetails, Stri
 	List<ProfileDetails> findAllByJobCat(String jobCategory, String currentCompany, int startExp, int endExp,
 			int noticePeriod, int budget) throws JsonParseException;
 
-	@Query("{jobCategory: ?0, jobProfile : { $in : ?1}, currentCompany : {$ne : ?2}, overallExp : {$gte : ?3, $lte : ?4},  noticePeriod : ?5, expectedCTC : {$lte : ?6}, selectedBy  : null}")
+	@Query("{jobCategory: ?0, jobProfile : { $all : ?1}, currentCompany : {$ne : ?2}, overallExp : {$gte : ?3, $lte : ?4},  noticePeriod : ?5, expectedCTC : {$lte : ?6}, selectedBy  : null}")
 	List<ProfileDetails> findAllByfilterCriteria(String jobCategory, List<String> jobProfile, String currentCompany,
 			int startExp, int endExp, int noticePeriod, int budget) throws JsonParseException;
 

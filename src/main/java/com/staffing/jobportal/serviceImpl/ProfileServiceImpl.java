@@ -183,6 +183,9 @@ public class ProfileServiceImpl implements ProfileService {
 					profile.getProgrammingR(), profile.getCommunicationR(), profile.getAttitudeR());
 			OptionalDouble res = doubleStream.average();
 			profile.setOverAllRating(res.getAsDouble());
+			if (null == profile.getJobCategory()) {
+				profile.setJobCategory("fulltime");
+			}
 
 			Summary summary = profile.getSummary();
 			if (null != summary && null != summary.getSkills()) {
