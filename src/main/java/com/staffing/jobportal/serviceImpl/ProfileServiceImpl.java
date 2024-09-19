@@ -52,9 +52,6 @@ public class ProfileServiceImpl implements ProfileService {
 		int startExp = 0;
 		int endExp = 0;
 		int budget = 0;
-		//-----
-		CustomeChanges();
-		//-----
 		try {
 			user = userRepository.findByEmail(email);
 			if (null != searchJob && null != searchJob.getExperienceRange()) {
