@@ -2,6 +2,7 @@ package com.staffing.jobportal.serviceImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.OptionalDouble;
@@ -194,13 +195,15 @@ public class ProfileServiceImpl implements ProfileService {
 				profile.setJobCategory("fulltime");
 			}
 				
-			Set<String> jobProfileAll = null;
+			Set<String> jobProfileAll = new HashSet<String>();
 			if (null != profile.getSummary()) {
 				List<String> skills = profile.getSummary().getSkills();
-				skills.replaceAll(String::toUpperCase);
-				skills.replaceAll(String::trim);
-				jobProfileAll = (Set<String>)skills;
-				
+				if (null != skills) {
+					skills.replaceAll(String::toUpperCase);
+					skills.replaceAll(String::trim);
+					jobProfileAll.addAll(skills);
+				}
+
 			}
 			if(null != profile.getDesignation()) {
 				jobProfileAll.add(profile.getDesignation().toUpperCase().trim());
