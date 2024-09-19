@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.OptionalDouble;
-import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.DoubleStream;
 
@@ -18,7 +18,6 @@ import com.staffing.jobportal.models.JobProfiles;
 import com.staffing.jobportal.models.ProfileDetails;
 import com.staffing.jobportal.models.ProfileSummary;
 import com.staffing.jobportal.models.SearchJob;
-import com.staffing.jobportal.models.Summary;
 import com.staffing.jobportal.models.User;
 import com.staffing.jobportal.repo.JobDescriptionRepo;
 import com.staffing.jobportal.repo.JobProfileRepo;
@@ -53,6 +52,9 @@ public class ProfileServiceImpl implements ProfileService {
 		int startExp = 0;
 		int endExp = 0;
 		int budget = 0;
+		//-----
+		CustomeChanges();
+		//-----
 		try {
 			user = userRepository.findByEmail(email);
 			if (null != searchJob && null != searchJob.getExperienceRange()) {
@@ -195,15 +197,25 @@ public class ProfileServiceImpl implements ProfileService {
 				profile.setJobCategory("fulltime");
 			}
 				
-			Summary summary = profile.getSummary();
-			if (null != summary) {
-				List<String> skills = summary.getSkills();
-				if (null != skills) {
-					skills.add(profile.getDesignation());
-					skills.replaceAll(String::toUpperCase);
-					profile.setJobProfile(skills);
-				}
+			Set<String> jobProfileAll = null;
+			if (null != profile.getSummary()) {
+				List<String> skills = profile.getSummary().getSkills();
+				skills.replaceAll(String::toUpperCase);
+				skills.replaceAll(String::trim);
+				jobProfileAll = (Set<String>)skills;
+				
 			}
+			if(null != profile.getDesignation()) {
+				jobProfileAll.add(profile.getDesignation().toUpperCase().trim());
+			}
+			if(null != profile.getFirstName() && null != profile.getLastName()) {
+				jobProfileAll.add(profile.getFirstName().toUpperCase().trim());
+				jobProfileAll.add(profile.getLastName().toUpperCase().trim());
+				
+			}
+			
+			profile.setJobProfile(jobProfileAll);
+			
 			profileDetailsRepo.save(profile);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -331,14 +343,9 @@ public class ProfileServiceImpl implements ProfileService {
 		while(itr.hasNext()) {
 			System.out.println("Count :: " + count);
 			ProfileDetails details = itr.next();
+			Set<String> jobProfile = details.getJobProfile();
+			System.out.println("Test");
 			
-			Random random = new Random();
-			int x = random.nextInt(11)+84;
-			
-			details.setMatchPer(x+"%");
-			
-			List<String> jobProfile = details.getJobProfile();
-			jobProfile.replaceAll(String::toUpperCase);
 			details.setJobProfile(jobProfile);
 			
 			profileDetailsRepo.deleteByProfileId(details.getProfileId());

@@ -2,6 +2,7 @@ package com.staffing.jobportal.models;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,7 +30,7 @@ public class ProfileDetails {
 	private String designation;
 	private Summary summary;
 	private List<String> certificationList;
-	private List<String> jobProfile;
+	private Set<String> jobProfile;
 	private String jobCategory;
 	private double dataEngR;
 	private double programmingR;
@@ -165,10 +166,11 @@ public class ProfileDetails {
 	public void setCertificationList(List<String> certificationList) {
 		this.certificationList = certificationList;
 	}
-	public List<String> getJobProfile() {
+	
+	public Set<String> getJobProfile() {
 		return jobProfile;
 	}
-	public void setJobProfile(List<String> jobProfile) {
+	public void setJobProfile(Set<String> jobProfile) {
 		this.jobProfile = jobProfile;
 	}
 	public String getJobCategory() {
