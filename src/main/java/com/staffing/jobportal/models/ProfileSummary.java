@@ -20,7 +20,17 @@ public class ProfileSummary {
 	private String selectedBy;
 	private String phone;
 	private String email;
+	private String matchPer;
 	
+	
+	public String getMatchPer() {
+		return matchPer;
+	}
+
+	public void setMatchPer(String matchPer) {
+		this.matchPer = matchPer;
+	}
+
 	public String getEmail() {
 		return email;
 	}

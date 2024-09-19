@@ -48,8 +48,15 @@ public class ProfileDetails {
 	private String selectedBy;
 	private int noticePeriod;
 	private LocalDateTime selectedDateTime;
+	private String matchPer;
 	
 	
+	public String getMatchPer() {
+		return matchPer;
+	}
+	public void setMatchPer(String matchPer) {
+		this.matchPer = matchPer;
+	}
 	public String getEducation() {
 		return education;
 	}

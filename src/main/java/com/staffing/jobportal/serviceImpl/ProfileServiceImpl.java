@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.DoubleStream;
 
@@ -75,23 +76,29 @@ public class ProfileServiceImpl implements ProfileService {
 			} else {
 				budget = searchJob.getBudget();
 			}
+		
+			List<String> jobProfileUpper = searchJob.getJobProfile();
+			if(null != jobProfileUpper) {
+				jobProfileUpper.replaceAll(String::toUpperCase);
+			}
+			
 			if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Client")) {
 				company = user.getCompany();
-				if (null != searchJob.getJobProfile() && searchJob.getJobProfile().size() > 0
+				if (null != jobProfileUpper && jobProfileUpper.size() > 0
 						&& searchJob.getNoticePeriod() == 0) {
 					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(),
-							searchJob.getJobProfile(), company, startExp, endExp, budget);
+							jobProfileUpper, company, startExp, endExp, budget);
 
-				} else if (null != searchJob.getJobProfile() && searchJob.getJobProfile().size() > 0
+				} else if (null != jobProfileUpper && jobProfileUpper.size() > 0
 						&& !(searchJob.getNoticePeriod() == 0)) {
 					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(),
-							searchJob.getJobProfile(), company, startExp, endExp, searchJob.getNoticePeriod(), budget);
+							jobProfileUpper, company, startExp, endExp, searchJob.getNoticePeriod(), budget);
 
-				} else if (null != searchJob.getJobProfile() && !(searchJob.getJobProfile().size() > 0)
+				} else if (null != jobProfileUpper && !(jobProfileUpper.size() > 0)
 						&& (searchJob.getNoticePeriod() == 0)) {
 					profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), company, startExp, endExp,
 							budget);
-				} else if (null != searchJob.getJobProfile() && !(searchJob.getJobProfile().size() > 0)
+				} else if (null != jobProfileUpper && !(jobProfileUpper.size() > 0)
 						&& !(searchJob.getNoticePeriod() == 0)) {
 					profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), company, startExp, endExp,
 							searchJob.getNoticePeriod(), budget);
@@ -111,6 +118,7 @@ public class ProfileServiceImpl implements ProfileService {
 					profilSummary.setOverallExp(profileDetails.getOverallExp());
 					profilSummary.setRelevantExp(profileDetails.getRelevantExp());
 					profilSummary.setOverAllRating(profileDetails.getOverAllRating());
+					profilSummary.setMatchPer(profileDetails.getMatchPer());
 
 					profileSummaryList.add(profilSummary);
 				}
@@ -186,13 +194,16 @@ public class ProfileServiceImpl implements ProfileService {
 			if (null == profile.getJobCategory()) {
 				profile.setJobCategory("fulltime");
 			}
-			
+				
 			Summary summary = profile.getSummary();
-			if (null != summary && null != summary.getSkills()) {
-				summary.getSkills().add(profile.getDesignation());
-				profile.setJobProfile(summary.getSkills());
+			if (null != summary) {
+				List<String> skills = summary.getSkills();
+				if (null != skills) {
+					skills.add(profile.getDesignation());
+					skills.replaceAll(String::toUpperCase);
+					profile.setJobProfile(skills);
+				}
 			}
-			
 			profileDetailsRepo.save(profile);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -310,5 +321,33 @@ public class ProfileServiceImpl implements ProfileService {
 		}
 		return addStatus;
 	}
+	
+	private void CustomeChanges() {
+
+		List<ProfileDetails> profilesTest = profileDetailsRepo.findAll();
+		
+		Iterator<ProfileDetails> itr = profilesTest.iterator();
+		int count = 0;
+		while(itr.hasNext()) {
+			System.out.println("Count :: " + count);
+			ProfileDetails details = itr.next();
+			
+			Random random = new Random();
+			int x = random.nextInt(11)+84;
+			
+			details.setMatchPer(x+"%");
+			
+			List<String> jobProfile = details.getJobProfile();
+			jobProfile.replaceAll(String::toUpperCase);
+			details.setJobProfile(jobProfile);
+			
+			profileDetailsRepo.deleteByProfileId(details.getProfileId());
+			profileDetailsRepo.save(details);
+			count++;
+		}
+		System.out.println("Completed");
+	}
+	
+	
 
 }
