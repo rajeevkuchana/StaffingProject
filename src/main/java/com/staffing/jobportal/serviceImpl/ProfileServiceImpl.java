@@ -344,9 +344,14 @@ public class ProfileServiceImpl implements ProfileService {
 			System.out.println("Count :: " + count);
 			ProfileDetails details = itr.next();
 			Set<String> jobProfile = details.getJobProfile();
-			System.out.println("Test");
+			Iterator<String> itrJP = jobProfile.iterator();
+			Set<String> tempJobProfile = new HashSet<String>();
+			while(itrJP.hasNext()) {
+				String jp = itrJP.next();
+				tempJobProfile.add(jp.trim());
+			}
 			
-			details.setJobProfile(jobProfile);
+			details.setJobProfile(tempJobProfile);
 			
 			profileDetailsRepo.deleteByProfileId(details.getProfileId());
 			profileDetailsRepo.save(details);
