@@ -28,8 +28,12 @@ public interface ProfileService {
 	
 	public boolean addJobProfiles(JobProfiles jobProfiles);
 	
-	public JobDescription getJobDescription(String jobCategory, String jobCategoryCode);
+	public boolean updateJobProfiles(JobProfiles jobProfiles);
+	
+	public boolean deleteJobProfiles(String categoryCode);
 	
 	public boolean addJobDescription(JobDescription jobDescription);
+	
+	public JobDescription getJobDescription(String jobCategory, String jobCategoryCode);
 		
 }

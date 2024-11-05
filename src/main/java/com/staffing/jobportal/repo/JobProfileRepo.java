@@ -14,4 +14,7 @@ public interface JobProfileRepo extends MongoRepository<JobProfiles, String>{
 	@Query("{jobCategory: ?0}")
 	List<JobProfiles> findByJobCategory(String jobCategory);
 	
+	@Query("{categoryCode: ?0}")
+	JobProfiles findByCategoryCode(String categoryCode);
+	
 }

@@ -104,7 +104,23 @@ public class ProfileController {
 		boolean addStatus = profileService.addJobProfiles(jobProfile);
 		return ResponseEntity.status(HttpStatus.CREATED).body(addStatus);
 	}
+	
+	@PutMapping("/edit/jobProfile")
+	@ApiOperation("Get a profile by ID")
+	public ResponseEntity<Boolean> updateJobProfiles(
+			@ApiParam(value = "Job Profile", example = "1", required = true) @RequestBody JobProfiles jobProfile) {
+		boolean addStatus = profileService.updateJobProfiles(jobProfile);
+		return ResponseEntity.status(HttpStatus.CREATED).body(addStatus);
+	}
 
+	@DeleteMapping("/delete/jobProfile")
+	@ApiOperation("Get a profile by ID")
+	public ResponseEntity<Boolean> deleteJobProfiles(
+			@ApiParam(value = "Job Profile", example = "1", required = true) @RequestParam String categoryCode) {
+		boolean addStatus = profileService.deleteJobProfiles(categoryCode);
+		return ResponseEntity.status(HttpStatus.CREATED).body(addStatus);
+	}
+	
 	@GetMapping("/clientSelected")
 	@ApiOperation("Get profiles with selected status by client")
 	public List<ProfileDetails> getProfilesClientSelected(

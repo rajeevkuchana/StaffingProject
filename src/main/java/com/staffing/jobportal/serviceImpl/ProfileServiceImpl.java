@@ -359,6 +359,32 @@ public class ProfileServiceImpl implements ProfileService {
 		}
 		System.out.println("Completed");
 	}
+
+	@Override
+	public boolean updateJobProfiles(JobProfiles jobProfiles) {
+		boolean updateStatus = false;
+		try {
+			jobProfileRepo.deleteById(jobProfiles.getId());
+			jobProfiles = jobProfileRepo.save(jobProfiles);
+			updateStatus = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return updateStatus;
+	}
+
+	@Override
+	public boolean deleteJobProfiles(String categoryCode) {
+		boolean deleteStatus = false;
+		try {
+			JobProfiles jobProfilesDelete = jobProfileRepo.findByCategoryCode(categoryCode);
+			jobProfileRepo.deleteById(jobProfilesDelete.getId());
+			deleteStatus = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return deleteStatus;
+	}
 	
 	
 
