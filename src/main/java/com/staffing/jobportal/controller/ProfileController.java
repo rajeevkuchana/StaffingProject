@@ -89,6 +89,16 @@ public class ProfileController {
 		return ResponseEntity.ok(addStatus);
 	}
 
+	@PostMapping("/edit/jobDescription")
+	@ApiOperation("Get Job Description")
+	public ResponseEntity<Boolean> updateJobDescription(
+			@ApiParam(value = "Job Description", example = "1", required = true) @RequestBody JobDescription jobDescription) {
+		boolean addStatus = false;
+		addStatus = profileService.updateJobDescription(jobDescription);
+		return ResponseEntity.ok(addStatus);
+	}
+
+	
 	@GetMapping("/jobProfiles")
 	@ApiOperation("Get a profile by ID")
 	public ResponseEntity<List<JobProfiles>> getJobProfiles(

@@ -386,6 +386,17 @@ public class ProfileServiceImpl implements ProfileService {
 		return deleteStatus;
 	}
 	
-	
+	@Override
+	public boolean updateJobDescription(JobDescription jobDescription) {
+		boolean updateStatus = false;
+		try {
+			jobDescriptionRepo.deleteById(jobDescription.getId());
+			jobDescriptionRepo.save(jobDescription);
+			updateStatus = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return updateStatus;
+	}
 
 }

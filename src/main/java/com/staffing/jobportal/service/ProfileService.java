@@ -34,6 +34,8 @@ public interface ProfileService {
 	
 	public boolean addJobDescription(JobDescription jobDescription);
 	
+	public boolean updateJobDescription(JobDescription jobDescription);
+	
 	public JobDescription getJobDescription(String jobCategory, String jobCategoryCode);
 		
 }
