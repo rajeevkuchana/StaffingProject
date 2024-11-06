@@ -89,7 +89,7 @@ public class ProfileController {
 		return ResponseEntity.ok(addStatus);
 	}
 
-	@PostMapping("/edit/jobDescription")
+	@PutMapping("/edit/jobDescription")
 	@ApiOperation("Get Job Description")
 	public ResponseEntity<Boolean> updateJobDescription(
 			@ApiParam(value = "Job Description", example = "1", required = true) @RequestBody JobDescription jobDescription) {
