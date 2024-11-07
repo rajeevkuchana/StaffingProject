@@ -76,23 +76,22 @@ public class ProfileServiceImpl implements ProfileService {
 			} else {
 				budget = searchJob.getBudget();
 			}
-		
+
 			List<String> jobProfileUpper = searchJob.getJobProfile();
-			if(null != jobProfileUpper) {
+			if (null != jobProfileUpper) {
 				jobProfileUpper.replaceAll(String::toUpperCase);
 			}
-			
+
 			if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Client")) {
 				company = user.getCompany();
-				if (null != jobProfileUpper && jobProfileUpper.size() > 0
-						&& searchJob.getNoticePeriod() == 0) {
-					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(),
-							jobProfileUpper, company, startExp, endExp, budget);
+				if (null != jobProfileUpper && jobProfileUpper.size() > 0 && searchJob.getNoticePeriod() == 0) {
+					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(), jobProfileUpper,
+							company, startExp, endExp, budget);
 
 				} else if (null != jobProfileUpper && jobProfileUpper.size() > 0
 						&& !(searchJob.getNoticePeriod() == 0)) {
-					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(),
-							jobProfileUpper, company, startExp, endExp, searchJob.getNoticePeriod(), budget);
+					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(), jobProfileUpper,
+							company, startExp, endExp, searchJob.getNoticePeriod(), budget);
 
 				} else if (null != jobProfileUpper && !(jobProfileUpper.size() > 0)
 						&& (searchJob.getNoticePeriod() == 0)) {
@@ -122,9 +121,60 @@ public class ProfileServiceImpl implements ProfileService {
 
 					profileSummaryList.add(profilSummary);
 				}
-			} else if (null != user && null != user.getRole()
-					&& (user.getRole().equalsIgnoreCase("Recruiter") || user.getRole().equalsIgnoreCase("Admin"))) {
+			} else if (null != user && null != user.getRole() && (user.getRole().equalsIgnoreCase("Recruiter"))) {
 
+				// ---------------------------------------
+
+				if (null != jobProfileUpper && jobProfileUpper.size() > 0 && searchJob.getNoticePeriod() == 0) {
+					if(null == searchJob.getJobCategory()) {
+						profiles = profileDetailsRepo.findAllByfilterCriteriaCli(
+								jobProfileUpper, email, startExp, endExp, budget);
+					}else {
+						profiles = profileDetailsRepo.findAllByfilterCriteriaCli(searchJob.getJobCategory(),
+								jobProfileUpper, email, startExp, endExp, budget);
+					}
+				} else if (null != jobProfileUpper && jobProfileUpper.size() > 0
+						&& !(searchJob.getNoticePeriod() == 0)) {
+					profiles = profileDetailsRepo.findAllByfilterCriteriaCli(searchJob.getJobCategory(),
+							jobProfileUpper, email, startExp, endExp, searchJob.getNoticePeriod(), budget);
+
+				} else if (null != jobProfileUpper && !(jobProfileUpper.size() > 0)
+						&& (searchJob.getNoticePeriod() == 0)) {
+					if(null == searchJob.getJobCategory()) {
+						profiles = profileDetailsRepo.findAllByJobCatCli( email, startExp,
+							endExp, budget);
+					}else {
+						profiles = profileDetailsRepo.findAllByJobCatCli(searchJob.getJobCategory(), email, startExp,
+								endExp, budget);
+					}
+				} else if (null != jobProfileUpper && !(jobProfileUpper.size() > 0)
+						&& !(searchJob.getNoticePeriod() == 0)) {
+					profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), email, startExp, endExp,
+							searchJob.getNoticePeriod(), budget);
+				}
+
+				Iterator<ProfileDetails> itr2 = profiles.iterator();
+				while (itr2.hasNext()) {
+					ProfileDetails profileDetails = itr2.next();
+					ProfileSummary profilSummary = new ProfileSummary();
+					profilSummary.setProfileId(profileDetails.getProfileId());
+					profilSummary.setFirstName(profileDetails.getFirstName());
+					profilSummary.setLastName(profileDetails.getLastName());
+					profilSummary.setPhone(profileDetails.getPhone());
+					profilSummary.setEmail(profileDetails.getEmail());
+					profilSummary.setCurrentCompany(profileDetails.getCurrentCompany());
+					profilSummary.setDesignation(profileDetails.getDesignation());
+					profilSummary.setLocation(profileDetails.getLocation());
+					profilSummary.setCurrentCTC(profileDetails.getCurrentCTC());
+					profilSummary.setExpectedCTC(profileDetails.getExpectedCTC());
+					profilSummary.setOverallExp(profileDetails.getOverallExp());
+					profilSummary.setRelevantExp(profileDetails.getRelevantExp());
+					profilSummary.setOverAllRating(profileDetails.getOverAllRating());
+					profilSummary.setJobCategory(profileDetails.getJobCategory());
+					profilSummary.setSelectedBy(profileDetails.getSelectedBy());
+					profileSummaryList.add(profilSummary);
+				}
+			} else if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Admin")) {
 				profiles = profileDetailsRepo.findAll();
 				Iterator<ProfileDetails> itr2 = profiles.iterator();
 				while (itr2.hasNext()) {
@@ -185,38 +235,42 @@ public class ProfileServiceImpl implements ProfileService {
 	@Override
 	public ProfileDetails addProfile(ProfileDetails profile) {
 
+		ProfileDetails alreadyProfileExist = null;
 		try {
-			profile.setProfileId(UUID.randomUUID() + "");
-			DoubleStream doubleStream = DoubleStream.of(profile.getDataEngR(), profile.getCloudEngR(),
-					profile.getProgrammingR(), profile.getCommunicationR(), profile.getAttitudeR());
-			OptionalDouble res = doubleStream.average();
-			profile.setOverAllRating(res.getAsDouble());
-			if (null == profile.getJobCategory()) {
-				profile.setJobCategory("fulltime");
-			}
-				
-			Set<String> jobProfileAll = new HashSet<String>();
-			if (null != profile.getSummary()) {
-				List<String> skills = profile.getSummary().getSkills();
-				if (null != skills) {
-					skills.replaceAll(String::toUpperCase);
-					skills.replaceAll(String::trim);
-					jobProfileAll.addAll(skills);
+			alreadyProfileExist = profileDetailsRepo.findByPhone(profile.getPhone());
+			if (null != alreadyProfileExist) {
+				profile.setProfileId(UUID.randomUUID() + "");
+				DoubleStream doubleStream = DoubleStream.of(profile.getDataEngR(), profile.getCloudEngR(),
+						profile.getProgrammingR(), profile.getCommunicationR(), profile.getAttitudeR());
+				OptionalDouble res = doubleStream.average();
+				profile.setOverAllRating(res.getAsDouble());
+				if (null == profile.getJobCategory()) {
+					profile.setJobCategory("fulltime");
 				}
 
+				Set<String> jobProfileAll = new HashSet<String>();
+				if (null != profile.getSummary()) {
+					List<String> skills = profile.getSummary().getSkills();
+					if (null != skills) {
+						skills.replaceAll(String::toUpperCase);
+						skills.replaceAll(String::trim);
+						jobProfileAll.addAll(skills);
+					}
+
+				}
+				if (null != profile.getDesignation()) {
+					jobProfileAll.add(profile.getDesignation().toUpperCase().trim());
+				}
+				if (null != profile.getFirstName() && null != profile.getLastName()) {
+					jobProfileAll.add(profile.getFirstName().toUpperCase().trim());
+					jobProfileAll.add(profile.getLastName().toUpperCase().trim());
+
+				}
+
+				profile.setJobProfile(jobProfileAll);
+
+				profileDetailsRepo.save(profile);
 			}
-			if(null != profile.getDesignation()) {
-				jobProfileAll.add(profile.getDesignation().toUpperCase().trim());
-			}
-			if(null != profile.getFirstName() && null != profile.getLastName()) {
-				jobProfileAll.add(profile.getFirstName().toUpperCase().trim());
-				jobProfileAll.add(profile.getLastName().toUpperCase().trim());
-				
-			}
-			
-			profile.setJobProfile(jobProfileAll);
-			
-			profileDetailsRepo.save(profile);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
