@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.staffing.jobportal.models.JobDescription;
 import com.staffing.jobportal.models.JobProfiles;
 import com.staffing.jobportal.models.ProfileDetails;
@@ -30,8 +33,8 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@CrossOrigin(origins = { "http://localhost:3000", "http://3.81.66.16:3000" }, methods = { RequestMethod.OPTIONS, RequestMethod.GET,
-		RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.POST })
+@CrossOrigin(origins = { "http://localhost:3000", "http://3.81.66.16:3000" }, methods = { RequestMethod.OPTIONS,
+		RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.POST })
 @RestController
 @RequestMapping("/profiles")
 @Api(tags = "Profile Management", description = "Endpoints for managing profiles")
@@ -54,8 +57,19 @@ public class ProfileController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "Profile created successfully"),
 			@ApiResponse(code = 400, message = "Invalid input data") })
 	public ResponseEntity<ProfileDetails> addProfile(
-			@ApiParam(value = "Profile object to be added", required = true) @RequestBody ProfileDetails profile) {
-		ProfileDetails addedProfile = profileService.addProfile(profile);
+			@ApiParam(value = "Profile object to be added", required = true) @RequestParam("data") String jsonData,
+			@RequestParam("profilePicture") MultipartFile profilePicture, @RequestParam("resume") MultipartFile resume,
+			@RequestParam("interviewVideo") MultipartFile interviewVideo){
+		ObjectMapper objectMapper = new ObjectMapper();
+		ProfileDetails profile;
+		ProfileDetails addedProfile = null;
+		try {
+			profile = objectMapper.readValue(jsonData, ProfileDetails.class);
+			addedProfile = profileService.addProfile(profile, profilePicture, resume, interviewVideo);
+		} catch (JsonProcessingException e) {
+			System.out.println(" Exception while parsing Json File"+e.getMessage());
+			e.printStackTrace();
+		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(addedProfile);
 	}
 
@@ -79,13 +93,22 @@ public class ProfileController {
 		JobDescription jobDescription = profileService.getJobDescription(jobCategory, jobCategoryCode);
 		return ResponseEntity.ok(jobDescription);
 	}
-	
+
 	@PostMapping("/add/jobDescription")
 	@ApiOperation("Get Job Description")
 	public ResponseEntity<Boolean> addJobDescription(
 			@ApiParam(value = "Job Description", example = "1", required = true) @RequestBody JobDescription jobDescription) {
 		boolean addStatus = false;
 		addStatus = profileService.addJobDescription(jobDescription);
+		return ResponseEntity.ok(addStatus);
+	}
+
+	@PostMapping("/edit/jobDescription")
+	@ApiOperation("Get Job Description")
+	public ResponseEntity<Boolean> updateJobDescription(
+			@ApiParam(value = "Job Description", example = "1", required = true) @RequestBody JobDescription jobDescription) {
+		boolean addStatus = false;
+		addStatus = profileService.updateJobDescription(jobDescription);
 		return ResponseEntity.ok(addStatus);
 	}
 
@@ -104,7 +127,7 @@ public class ProfileController {
 		boolean addStatus = profileService.addJobProfiles(jobProfile);
 		return ResponseEntity.status(HttpStatus.CREATED).body(addStatus);
 	}
-	
+
 	@PutMapping("/edit/jobProfile")
 	@ApiOperation("Get a profile by ID")
 	public ResponseEntity<Boolean> updateJobProfiles(
@@ -120,7 +143,7 @@ public class ProfileController {
 		boolean addStatus = profileService.deleteJobProfiles(categoryCode);
 		return ResponseEntity.status(HttpStatus.CREATED).body(addStatus);
 	}
-	
+
 	@GetMapping("/clientSelected")
 	@ApiOperation("Get profiles with selected status by client")
 	public List<ProfileDetails> getProfilesClientSelected(

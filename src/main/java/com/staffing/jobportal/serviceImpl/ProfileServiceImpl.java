@@ -1,5 +1,8 @@
 package com.staffing.jobportal.serviceImpl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,7 +15,9 @@ import java.util.stream.DoubleStream;
 
 import org.bson.json.JsonParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.staffing.jobportal.models.JobDescription;
 import com.staffing.jobportal.models.JobProfiles;
@@ -25,6 +30,10 @@ import com.staffing.jobportal.repo.JobProfileRepo;
 import com.staffing.jobportal.repo.ProfileDetailsRepo;
 import com.staffing.jobportal.repo.UserRepo;
 import com.staffing.jobportal.service.ProfileService;
+
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @Service
 public class ProfileServiceImpl implements ProfileService {
@@ -40,6 +49,21 @@ public class ProfileServiceImpl implements ProfileService {
 
 	@Autowired
 	private JobProfileRepo jobProfileRepo;
+
+	@Autowired
+	private S3Client s3Client;
+
+	@Value("${aws.s3.bucket}")
+	private String bucketName;
+
+	@Value("${aws.region}")
+	private String region;
+
+	@Value("${aws.accessKeyId}")
+	private String accessKeyId;
+
+	@Value("${aws.secretAccessKey}")
+	private String secretAccessKey;
 
 	@Override
 	public List<ProfileSummary> getAllProfiles(SearchJob searchJob) {
@@ -76,23 +100,22 @@ public class ProfileServiceImpl implements ProfileService {
 			} else {
 				budget = searchJob.getBudget();
 			}
-		
+
 			List<String> jobProfileUpper = searchJob.getJobProfile();
-			if(null != jobProfileUpper) {
+			if (null != jobProfileUpper) {
 				jobProfileUpper.replaceAll(String::toUpperCase);
 			}
-			
+
 			if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Client")) {
 				company = user.getCompany();
-				if (null != jobProfileUpper && jobProfileUpper.size() > 0
-						&& searchJob.getNoticePeriod() == 0) {
-					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(),
-							jobProfileUpper, company, startExp, endExp, budget);
+				if (null != jobProfileUpper && jobProfileUpper.size() > 0 && searchJob.getNoticePeriod() == 0) {
+					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(), jobProfileUpper,
+							company, startExp, endExp, budget);
 
 				} else if (null != jobProfileUpper && jobProfileUpper.size() > 0
 						&& !(searchJob.getNoticePeriod() == 0)) {
-					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(),
-							jobProfileUpper, company, startExp, endExp, searchJob.getNoticePeriod(), budget);
+					profiles = profileDetailsRepo.findAllByfilterCriteria(searchJob.getJobCategory(), jobProfileUpper,
+							company, startExp, endExp, searchJob.getNoticePeriod(), budget);
 
 				} else if (null != jobProfileUpper && !(jobProfileUpper.size() > 0)
 						&& (searchJob.getNoticePeriod() == 0)) {
@@ -122,9 +145,60 @@ public class ProfileServiceImpl implements ProfileService {
 
 					profileSummaryList.add(profilSummary);
 				}
-			} else if (null != user && null != user.getRole()
-					&& (user.getRole().equalsIgnoreCase("Recruiter") || user.getRole().equalsIgnoreCase("Admin"))) {
+			} else if (null != user && null != user.getRole() && (user.getRole().equalsIgnoreCase("Recruiter"))) {
 
+				// ---------------------------------------
+
+				if (null != jobProfileUpper && jobProfileUpper.size() > 0 && searchJob.getNoticePeriod() == 0) {
+					if(null == searchJob.getJobCategory()) {
+						profiles = profileDetailsRepo.findAllByfilterCriteriaCli(
+								jobProfileUpper, email, startExp, endExp, budget);
+					}else {
+						profiles = profileDetailsRepo.findAllByfilterCriteriaCli(searchJob.getJobCategory(),
+								jobProfileUpper, email, startExp, endExp, budget);
+					}
+				} else if (null != jobProfileUpper && jobProfileUpper.size() > 0
+						&& !(searchJob.getNoticePeriod() == 0)) {
+					profiles = profileDetailsRepo.findAllByfilterCriteriaCli(searchJob.getJobCategory(),
+							jobProfileUpper, email, startExp, endExp, searchJob.getNoticePeriod(), budget);
+
+				} else if (null != jobProfileUpper && !(jobProfileUpper.size() > 0)
+						&& (searchJob.getNoticePeriod() == 0)) {
+					if(null == searchJob.getJobCategory()) {
+						profiles = profileDetailsRepo.findAllByJobCatCli( email, startExp,
+							endExp, budget);
+					}else {
+						profiles = profileDetailsRepo.findAllByJobCatCli(searchJob.getJobCategory(), email, startExp,
+								endExp, budget);
+					}
+				} else if (null != jobProfileUpper && !(jobProfileUpper.size() > 0)
+						&& !(searchJob.getNoticePeriod() == 0)) {
+					profiles = profileDetailsRepo.findAllByJobCat(searchJob.getJobCategory(), email, startExp, endExp,
+							searchJob.getNoticePeriod(), budget);
+				}
+
+				Iterator<ProfileDetails> itr2 = profiles.iterator();
+				while (itr2.hasNext()) {
+					ProfileDetails profileDetails = itr2.next();
+					ProfileSummary profilSummary = new ProfileSummary();
+					profilSummary.setProfileId(profileDetails.getProfileId());
+					profilSummary.setFirstName(profileDetails.getFirstName());
+					profilSummary.setLastName(profileDetails.getLastName());
+					profilSummary.setPhone(profileDetails.getPhone());
+					profilSummary.setEmail(profileDetails.getEmail());
+					profilSummary.setCurrentCompany(profileDetails.getCurrentCompany());
+					profilSummary.setDesignation(profileDetails.getDesignation());
+					profilSummary.setLocation(profileDetails.getLocation());
+					profilSummary.setCurrentCTC(profileDetails.getCurrentCTC());
+					profilSummary.setExpectedCTC(profileDetails.getExpectedCTC());
+					profilSummary.setOverallExp(profileDetails.getOverallExp());
+					profilSummary.setRelevantExp(profileDetails.getRelevantExp());
+					profilSummary.setOverAllRating(profileDetails.getOverAllRating());
+					profilSummary.setJobCategory(profileDetails.getJobCategory());
+					profilSummary.setSelectedBy(profileDetails.getSelectedBy());
+					profileSummaryList.add(profilSummary);
+				}
+			} else if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Admin")) {
 				profiles = profileDetailsRepo.findAll();
 				Iterator<ProfileDetails> itr2 = profiles.iterator();
 				while (itr2.hasNext()) {
@@ -183,44 +257,85 @@ public class ProfileServiceImpl implements ProfileService {
 	}
 
 	@Override
-	public ProfileDetails addProfile(ProfileDetails profile) {
-
+	public ProfileDetails addProfile(ProfileDetails profile, MultipartFile profilePicture, MultipartFile resume,
+			MultipartFile interviewVideo) {
+		ProfileDetails alreadyProfileExist = null;
 		try {
-			profile.setProfileId(UUID.randomUUID() + "");
-			DoubleStream doubleStream = DoubleStream.of(profile.getDataEngR(), profile.getCloudEngR(),
-					profile.getProgrammingR(), profile.getCommunicationR(), profile.getAttitudeR());
-			OptionalDouble res = doubleStream.average();
-			profile.setOverAllRating(res.getAsDouble());
-			if (null == profile.getJobCategory()) {
-				profile.setJobCategory("fulltime");
-			}
-				
-			Set<String> jobProfileAll = new HashSet<String>();
-			if (null != profile.getSummary()) {
-				List<String> skills = profile.getSummary().getSkills();
-				if (null != skills) {
-					skills.replaceAll(String::toUpperCase);
-					skills.replaceAll(String::trim);
-					jobProfileAll.addAll(skills);
+
+			alreadyProfileExist = profileDetailsRepo.findByPhone(profile.getPhone());
+
+			if (null != alreadyProfileExist) {
+				profile.setProfileId(UUID.randomUUID() + "");
+				DoubleStream doubleStream = DoubleStream.of(profile.getDataEngR(), profile.getCloudEngR(),
+						profile.getProgrammingR(), profile.getCommunicationR(), profile.getAttitudeR());
+				OptionalDouble res = doubleStream.average();
+				profile.setOverAllRating(res.getAsDouble());
+				if (null == profile.getJobCategory()) {
+					profile.setJobCategory("fulltime");
 				}
 
+				Set<String> jobProfile = new HashSet<String>();
+				if (null != profile.getSummary()) {
+					List<String> skills = profile.getSummary().getSkills();
+					if (null != skills) {
+						skills.replaceAll(String::toUpperCase);
+						skills.replaceAll(String::trim);
+						jobProfile.addAll(skills);
+					}
+
+				}
+				if (null != profile.getDesignation()) {
+					jobProfile.add(profile.getDesignation().toUpperCase().trim());
+				}
+				if (null != profile.getFirstName() && null != profile.getLastName()) {
+					jobProfile.add(profile.getFirstName().toUpperCase().trim());
+					jobProfile.add(profile.getLastName().toUpperCase().trim());
+
+				}
+
+				profile.setJobProfile(jobProfile);
+				if (null != profilePicture && !profilePicture.getOriginalFilename().equals("")) {
+					String profilePictureURL = uploadFileToS3(profilePicture, profile.getProfileId(), "pic.png");
+					profile.setProfilePic(profilePictureURL);
+				}
+				if (null != resume && !resume.getOriginalFilename().equals("")) {
+					String resumeURL = uploadFileToS3(resume, profile.getProfileId(), "resume.pdf");
+					profile.setResumeLink(resumeURL);
+				}
+				if (null != interviewVideo && !interviewVideo.getOriginalFilename().equals("")) {
+					String interviewVideoURL = uploadFileToS3(interviewVideo, profile.getProfileId(), "video");
+					profile.setVideoLink(interviewVideoURL);
+				}
+
+				profileDetailsRepo.save(profile);
 			}
-			if(null != profile.getDesignation()) {
-				jobProfileAll.add(profile.getDesignation().toUpperCase().trim());
-			}
-			if(null != profile.getFirstName() && null != profile.getLastName()) {
-				jobProfileAll.add(profile.getFirstName().toUpperCase().trim());
-				jobProfileAll.add(profile.getLastName().toUpperCase().trim());
-				
-			}
-			
-			profile.setJobProfile(jobProfileAll);
-			
-			profileDetailsRepo.save(profile);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return profile;
+	}
+
+	private String uploadFileToS3(MultipartFile file, String UUID, String type) {
+		String awsS3URL = "";
+		try {
+			String uniqueFileName = UUID.toString() + "-" + type;
+			Path tempFile = Files.createTempFile(null, null);
+			file.transferTo(tempFile);
+
+			PutObjectRequest putObjectRequest = PutObjectRequest.builder().bucket(bucketName).key(uniqueFileName)
+					.build();
+
+			s3Client.putObject(putObjectRequest, tempFile);
+
+			awsS3URL = "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + uniqueFileName;
+
+		} catch (S3Exception s3E) {
+			// Handle exceptions and return a friendly error message
+			return "Error uploading file: " + s3E.getMessage();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+		return awsS3URL;
 	}
 
 	@Override
@@ -333,32 +448,25 @@ public class ProfileServiceImpl implements ProfileService {
 		}
 		return addStatus;
 	}
-	
-	private void CustomeChanges() {
 
-		List<ProfileDetails> profilesTest = profileDetailsRepo.findAll();
-		
-		Iterator<ProfileDetails> itr = profilesTest.iterator();
-		int count = 0;
-		while(itr.hasNext()) {
-			System.out.println("Count :: " + count);
-			ProfileDetails details = itr.next();
-			Set<String> jobProfile = details.getJobProfile();
-			Iterator<String> itrJP = jobProfile.iterator();
-			Set<String> tempJobProfile = new HashSet<String>();
-			while(itrJP.hasNext()) {
-				String jp = itrJP.next();
-				tempJobProfile.add(jp.trim());
-			}
-			
-			details.setJobProfile(tempJobProfile);
-			
-			profileDetailsRepo.deleteByProfileId(details.getProfileId());
-			profileDetailsRepo.save(details);
-			count++;
-		}
-		System.out.println("Completed");
-	}
+	/*
+	 * private void CustomeChanges() {
+	 * 
+	 * List<ProfileDetails> profilesTest = profileDetailsRepo.findAll();
+	 * 
+	 * Iterator<ProfileDetails> itr = profilesTest.iterator(); int count = 0;
+	 * while(itr.hasNext()) { System.out.println("Count :: " + count);
+	 * ProfileDetails details = itr.next(); Set<String> jobProfile =
+	 * details.getJobProfile(); Iterator<String> itrJP = jobProfile.iterator();
+	 * Set<String> tempJobProfile = new HashSet<String>(); while(itrJP.hasNext()) {
+	 * String jp = itrJP.next(); tempJobProfile.add(jp.trim()); }
+	 * 
+	 * details.setJobProfile(tempJobProfile);
+	 * 
+	 * profileDetailsRepo.deleteByProfileId(details.getProfileId());
+	 * profileDetailsRepo.save(details); count++; } System.out.println("Completed");
+	 * }
+	 */
 
 	@Override
 	public boolean updateJobProfiles(JobProfiles jobProfiles) {
@@ -385,7 +493,18 @@ public class ProfileServiceImpl implements ProfileService {
 		}
 		return deleteStatus;
 	}
-	
-	
+
+	@Override
+	public boolean updateJobDescription(JobDescription jobDescription) {
+		boolean updateStatus = false;
+		try {
+			jobDescriptionRepo.deleteById(jobDescription.getId());
+			jobDescriptionRepo.save(jobDescription);
+			updateStatus = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return updateStatus;
+	}
 
 }

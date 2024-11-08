@@ -2,6 +2,8 @@ package com.staffing.jobportal.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.staffing.jobportal.models.JobDescription;
 import com.staffing.jobportal.models.JobProfiles;
 import com.staffing.jobportal.models.ProfileDetails;
@@ -16,7 +18,7 @@ public interface ProfileService {
 
 	public List<ProfileDetails> getProfilesClientSelected(String email);
 
-	public ProfileDetails addProfile(ProfileDetails profile);
+	public ProfileDetails addProfile(ProfileDetails profile, MultipartFile profilePicture, MultipartFile resume, MultipartFile interviewVideo);
 
 	public boolean deleteProfile(String id);
 
@@ -33,6 +35,8 @@ public interface ProfileService {
 	public boolean deleteJobProfiles(String categoryCode);
 	
 	public boolean addJobDescription(JobDescription jobDescription);
+	
+	public boolean updateJobDescription(JobDescription jobDescription);
 	
 	public JobDescription getJobDescription(String jobCategory, String jobCategoryCode);
 		
