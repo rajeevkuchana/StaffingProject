@@ -73,6 +73,29 @@ public class ProfileController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(addedProfile);
 	}
 
+	@PutMapping("/edit")
+	@ApiOperation("Update a profile by ID")
+	@ApiResponses({ @ApiResponse(code = 200, message = "Profile updated successfully"),
+			@ApiResponse(code = 404, message = "Profile not found") })
+	public ResponseEntity<Boolean> editProfile(
+			@ApiParam(value = "Profile object to be added", required = true) @RequestParam("data") String jsonData,
+			@RequestParam("profilePicture") MultipartFile profilePicture, @RequestParam("resume") MultipartFile resume,
+			@RequestParam("interviewVideo") MultipartFile interviewVideo) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		ProfileDetails profile;
+		ProfileDetails editProfile = null;
+		boolean editStatus = false;
+		try {
+			profile = objectMapper.readValue(jsonData, ProfileDetails.class);
+			editStatus = profileService.editProfile(profile, profilePicture, resume, interviewVideo);
+		} catch (JsonProcessingException e) {
+			System.out.println(" Exception while parsing Json File"+e.getMessage());
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(editStatus);
+
+	}
+	
 	@GetMapping("/{profileId}")
 	@ApiOperation("Get a profile by ID")
 	public ResponseEntity<ProfileDetails> getProfileById(
@@ -162,18 +185,7 @@ public class ProfileController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@PutMapping("/edit/{profileId}")
-	@ApiOperation("Update a profile by ID")
-	@ApiResponses({ @ApiResponse(code = 200, message = "Profile updated successfully"),
-			@ApiResponse(code = 404, message = "Profile not found") })
-	public ResponseEntity<Boolean> editProfile(
-			@ApiParam(value = "Profile ID", example = "1", required = true) @PathVariable String profileId,
-			@ApiParam(value = "Updated profile object", required = true) @RequestBody ProfileDetails updatedProfile) {
-
-		boolean editStatus = profileService.editProfile(profileId, updatedProfile);
-		return ResponseEntity.ok(editStatus);
-
-	}
+	
 
 	@GetMapping("/select/{profileId}")
 	@ApiOperation("Select a profile by ID")

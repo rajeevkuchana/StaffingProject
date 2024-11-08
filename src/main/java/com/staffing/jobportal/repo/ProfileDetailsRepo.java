@@ -16,7 +16,7 @@ public interface ProfileDetailsRepo extends MongoRepository<ProfileDetails, Stri
 
 	ProfileDetails findByProfileId(String profileId);
 	
-	ProfileDetails findByPhone(String phone);
+	List<ProfileDetails> findByPhone(String phone);
 	
 	long deleteByProfileId(String profileId);
 

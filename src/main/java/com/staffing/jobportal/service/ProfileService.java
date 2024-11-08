@@ -20,9 +20,9 @@ public interface ProfileService {
 
 	public ProfileDetails addProfile(ProfileDetails profile, MultipartFile profilePicture, MultipartFile resume, MultipartFile interviewVideo);
 
+	public boolean editProfile(ProfileDetails profile, MultipartFile profilePicture, MultipartFile resume, MultipartFile interviewVideo);
+	
 	public boolean deleteProfile(String id);
-
-	public boolean editProfile(String profileId, ProfileDetails updatedProfile);
 
 	public boolean selectProfile(String profileId, String selectedBy);
 	

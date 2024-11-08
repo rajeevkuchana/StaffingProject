@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 import org.bson.json.JsonParseException;
@@ -32,8 +33,11 @@ import com.staffing.jobportal.repo.UserRepo;
 import com.staffing.jobportal.service.ProfileService;
 
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 @Service
 public class ProfileServiceImpl implements ProfileService {
@@ -259,7 +263,7 @@ public class ProfileServiceImpl implements ProfileService {
 	@Override
 	public ProfileDetails addProfile(ProfileDetails profile, MultipartFile profilePicture, MultipartFile resume,
 			MultipartFile interviewVideo) {
-		ProfileDetails alreadyProfileExist = null;
+		List<ProfileDetails> alreadyProfileExist = null;
 		try {
 
 			alreadyProfileExist = profileDetailsRepo.findByPhone(profile.getPhone());
@@ -294,6 +298,7 @@ public class ProfileServiceImpl implements ProfileService {
 				}
 
 				profile.setJobProfile(jobProfile);
+				
 				if (null != profilePicture && !profilePicture.getOriginalFilename().equals("")) {
 					String profilePictureURL = uploadFileToS3(profilePicture, profile.getProfileId(), "pic.png");
 					profile.setProfilePic(profilePictureURL);
@@ -317,25 +322,113 @@ public class ProfileServiceImpl implements ProfileService {
 
 	private String uploadFileToS3(MultipartFile file, String UUID, String type) {
 		String awsS3URL = "";
+		List<String> filesList = null;
 		try {
 			String uniqueFileName = UUID.toString() + "-" + type;
-			Path tempFile = Files.createTempFile(null, null);
-			file.transferTo(tempFile);
-
-			PutObjectRequest putObjectRequest = PutObjectRequest.builder().bucket(bucketName).key(uniqueFileName)
-					.build();
-
-			s3Client.putObject(putObjectRequest, tempFile);
-
 			awsS3URL = "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + uniqueFileName;
+			filesList = listFiles(bucketName);
+			if (!filesList.contains("awsS3URL")) {
+
+				Path tempFile = Files.createTempFile(null, null);
+				file.transferTo(tempFile);
+
+				PutObjectRequest putObjectRequest = PutObjectRequest.builder().bucket(bucketName).key(uniqueFileName)
+						.build();
+
+				s3Client.putObject(putObjectRequest, tempFile);
+			}else {
+				awsS3URL = "";
+			}
 
 		} catch (S3Exception s3E) {
-			// Handle exceptions and return a friendly error message
+
 			return "Error uploading file: " + s3E.getMessage();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
 		return awsS3URL;
+	}
+	
+	private List<String> listFiles(String bucketName) {
+        try {
+            ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder()
+                    .bucket(bucketName)
+                    .build();
+            
+            ListObjectsV2Response listObjectsResponse = s3Client.listObjectsV2(listObjectsRequest);
+            
+            return listObjectsResponse.contents().stream()
+                    .map(S3Object::key)
+                    .collect(Collectors.toList());
+        } catch (S3Exception e) {
+            System.err.println("Failed to list files: " + e.awsErrorDetails().errorMessage());
+            throw e;
+        }
+    }
+	
+	@Override
+	public boolean editProfile(ProfileDetails profile, MultipartFile profilePicture, MultipartFile resume,
+			MultipartFile interviewVideo) {
+		boolean editStatus = false;
+		Long deleteStatus = 0L;
+		try {
+			deleteStatus = profileDetailsRepo.deleteByProfileId(profile.getProfileId());
+			if (!deleteStatus.equals(0)) {
+				DoubleStream doubleStream = DoubleStream.of(profile.getDataEngR(), profile.getCloudEngR(),
+						profile.getProgrammingR(), profile.getCommunicationR(), profile.getAttitudeR());
+				OptionalDouble res = doubleStream.average();
+				profile.setOverAllRating(res.getAsDouble());
+				
+				if (null == profile.getJobCategory()) {
+					profile.setJobCategory("fulltime");
+				}
+
+				Set<String> jobProfile = new HashSet<String>();
+				if (null != profile.getSummary()) {
+					List<String> skills = profile.getSummary().getSkills();
+					if (null != skills) {
+						skills.replaceAll(String::toUpperCase);
+						skills.replaceAll(String::trim);
+						jobProfile.addAll(skills);
+					}
+
+				}
+				if (null != profile.getDesignation()) {
+					jobProfile.add(profile.getDesignation().toUpperCase().trim());
+				}
+				if (null != profile.getFirstName() && null != profile.getLastName()) {
+					jobProfile.add(profile.getFirstName().toUpperCase().trim());
+					jobProfile.add(profile.getLastName().toUpperCase().trim());
+
+				}
+
+				profile.setJobProfile(jobProfile);
+				
+				if (null != profilePicture && !profilePicture.getOriginalFilename().equals("")) {
+					String profilePictureURL = uploadFileToS3(profilePicture, profile.getProfileId(), "pic.png");
+					profile.setProfilePic(profilePictureURL);
+				}
+				if (null != resume && !resume.getOriginalFilename().equals("")) {
+					String resumeURL = uploadFileToS3(resume, profile.getProfileId(), "resume.pdf");
+					profile.setResumeLink(resumeURL);
+				}
+				if (null != interviewVideo && !interviewVideo.getOriginalFilename().equals("")) {
+					String interviewVideoURL = uploadFileToS3(interviewVideo, profile.getProfileId(), "video");
+					profile.setVideoLink(interviewVideoURL);
+				}
+
+				
+				//------------------------------------
+				ProfileDetails profileDetails = profileDetailsRepo.save(profile);
+				if (null != profileDetails) {
+					editStatus = true;
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return editStatus;
 	}
 
 	@Override
@@ -351,26 +444,6 @@ public class ProfileServiceImpl implements ProfileService {
 			e.printStackTrace();
 		}
 		return deleteStatus;
-	}
-
-	@Override
-	public boolean editProfile(String profileId, ProfileDetails updatedProfile) {
-		boolean editStatus = false;
-		Long deleteStatus = 0L;
-		try {
-			deleteStatus = profileDetailsRepo.deleteByProfileId(profileId);
-			if (!deleteStatus.equals(0)) {
-				updatedProfile.setProfileId(profileId);
-				ProfileDetails profileDetails = profileDetailsRepo.save(updatedProfile);
-				if (null != profileDetails) {
-					editStatus = true;
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return editStatus;
 	}
 
 	@Override
