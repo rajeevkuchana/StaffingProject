@@ -22,7 +22,7 @@ import com.staffing.jobportal.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 
-@CrossOrigin(origins = { "http://localhost:3000", "http://3.81.66.16:3000" }, methods = { RequestMethod.OPTIONS, RequestMethod.GET,
+@CrossOrigin(origins = { "http://localhost:3000", "http://3.81.66.16:3000" , "http://10.0.0.4:3000"}, methods = { RequestMethod.OPTIONS, RequestMethod.GET,
 		RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.POST })
 @RestController
 @RequestMapping("/")
