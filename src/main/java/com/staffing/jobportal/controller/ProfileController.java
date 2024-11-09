@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@CrossOrigin(origins = { "http://localhost:3000", "http://3.81.66.16:3000", "https://portal.quantlytixsolutions.com/" }, methods = { RequestMethod.OPTIONS,
+@CrossOrigin(origins = { "http://localhost:3000", "http://3.81.66.16:3000", "https://portal.quantlytixsolutions.com" }, methods = { RequestMethod.OPTIONS,
 		RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.POST })
 @RestController
 @RequestMapping("/profiles")
