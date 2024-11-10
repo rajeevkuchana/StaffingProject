@@ -63,11 +63,11 @@ public class ProfileServiceImpl implements ProfileService {
 	@Value("${aws.region}")
 	private String region;
 
-	@Value("${aws.accessKeyId}")
-	private String accessKeyId;
+	//@Value("${aws.accessKeyId}")
+	//private String accessKeyId;
 
-	@Value("${aws.secretAccessKey}")
-	private String secretAccessKey;
+	//@Value("${aws.secretAccessKey}")
+	//private String secretAccessKey;
 
 	@Override
 	public List<ProfileSummary> getAllProfiles(SearchJob searchJob) {
