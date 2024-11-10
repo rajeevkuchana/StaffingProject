@@ -338,7 +338,7 @@ public class ProfileServiceImpl implements ProfileService {
 			String uniqueFileName = UUID.toString() + "-" + type;
 			awsS3URL = "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + uniqueFileName;
 			filesList = listFiles(bucketName);
-			if (!filesList.contains("awsS3URL")) {
+			if (!filesList.contains(awsS3URL)) {
 
 				Path tempFile = Files.createTempFile(null, null);
 				file.transferTo(tempFile);
