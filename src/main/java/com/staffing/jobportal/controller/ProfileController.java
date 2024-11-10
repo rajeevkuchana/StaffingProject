@@ -59,8 +59,8 @@ public class ProfileController {
 			@ApiResponse(code = 400, message = "Invalid input data") })
 	public ResponseEntity<ProfileDetails> addProfile(
 			@ApiParam(value = "Profile object to be added", required = true) @RequestParam("data") String jsonData,
-			@RequestParam("profilePicture") MultipartFile profilePicture, @RequestParam("resume") MultipartFile resume,
-			@RequestParam("interviewVideo") MultipartFile interviewVideo){
+			@RequestParam(value ="profilePicture", required = false) MultipartFile profilePicture, @RequestParam(value = "resume" , required = false) MultipartFile resume,
+			@RequestParam(value= "interviewVideo", required = false) MultipartFile interviewVideo){
 		ObjectMapper objectMapper = new ObjectMapper();
 		ProfileDetails profile;
 		ProfileDetails addedProfile = null;
@@ -80,8 +80,8 @@ public class ProfileController {
 			@ApiResponse(code = 404, message = "Profile not found") })
 	public ResponseEntity<Boolean> editProfile(
 			@ApiParam(value = "Profile object to be added", required = true) @RequestParam("data") String jsonData,
-			@RequestParam("profilePicture") MultipartFile profilePicture, @RequestParam("resume") MultipartFile resume,
-			@RequestParam("interviewVideo") MultipartFile interviewVideo) {
+			@RequestParam(value ="profilePicture", required = false) MultipartFile profilePicture, @RequestParam(value = "resume" , required = false) MultipartFile resume,
+			@RequestParam(value= "interviewVideo", required = false) MultipartFile interviewVideo){
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());
 		ProfileDetails profile;
