@@ -22,9 +22,7 @@ public class AwsConfig {
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
-                .region(Region.of(region)) // Use region from properties
-                //.credentialsProvider(StaticCredentialsProvider.create(
-                 //       AwsBasicCredentials.create(accessKeyId, secretAccessKey)))
+                .region(Region.of(region)) // Replace with your bucket's region
                 .build();
     }
 }

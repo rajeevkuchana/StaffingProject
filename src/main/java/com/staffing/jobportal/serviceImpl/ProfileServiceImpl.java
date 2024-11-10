@@ -322,6 +322,8 @@ public class ProfileServiceImpl implements ProfileService {
 					profile.setSelectedBy(null);
 				}
 				profileDetailsRepo.save(profile);
+			}else {
+				profile = new ProfileDetails();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
