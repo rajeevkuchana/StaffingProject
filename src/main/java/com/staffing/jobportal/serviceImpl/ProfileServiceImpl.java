@@ -63,11 +63,11 @@ public class ProfileServiceImpl implements ProfileService {
 	@Value("${aws.region}")
 	private String region;
 
-	//@Value("${aws.accessKeyId}")
-	//private String accessKeyId;
+	// @Value("${aws.accessKeyId}")
+	// private String accessKeyId;
 
-	//@Value("${aws.secretAccessKey}")
-	//private String secretAccessKey;
+	// @Value("${aws.secretAccessKey}")
+	// private String secretAccessKey;
 
 	@Override
 	public List<ProfileSummary> getAllProfiles(SearchJob searchJob) {
@@ -154,10 +154,10 @@ public class ProfileServiceImpl implements ProfileService {
 				// ---------------------------------------
 
 				if (null != jobProfileUpper && jobProfileUpper.size() > 0 && searchJob.getNoticePeriod() == 0) {
-					if(null == searchJob.getJobCategory()) {
-						profiles = profileDetailsRepo.findAllByfilterCriteriaCli(
-								jobProfileUpper, email, startExp, endExp, budget);
-					}else {
+					if (null == searchJob.getJobCategory()) {
+						profiles = profileDetailsRepo.findAllByfilterCriteriaCli(jobProfileUpper, email, startExp,
+								endExp, budget);
+					} else {
 						profiles = profileDetailsRepo.findAllByfilterCriteriaCli(searchJob.getJobCategory(),
 								jobProfileUpper, email, startExp, endExp, budget);
 					}
@@ -168,10 +168,9 @@ public class ProfileServiceImpl implements ProfileService {
 
 				} else if (null != jobProfileUpper && !(jobProfileUpper.size() > 0)
 						&& (searchJob.getNoticePeriod() == 0)) {
-					if(null == searchJob.getJobCategory()) {
-						profiles = profileDetailsRepo.findAllByJobCatCli( email, startExp,
-							endExp, budget);
-					}else {
+					if (null == searchJob.getJobCategory()) {
+						profiles = profileDetailsRepo.findAllByJobCatCli(email, startExp, endExp, budget);
+					} else {
 						profiles = profileDetailsRepo.findAllByJobCatCli(searchJob.getJobCategory(), email, startExp,
 								endExp, budget);
 					}
@@ -251,16 +250,16 @@ public class ProfileServiceImpl implements ProfileService {
 		User user = null;
 		try {
 			user = userRepository.findByEmail(selectedBy);
-			
-			if (null != user && null != user.getRole() && null != user.getCompany() && user.getRole().equalsIgnoreCase("Client")) {
-					profilesList = profileDetailsRepo.findAllBySelectedBy(user.getCompany());
-			}else if (null != user && null != user.getRole() && (user.getRole().equalsIgnoreCase("Recruiter"))) {
+
+			if (null != user && null != user.getRole() && null != user.getCompany()
+					&& user.getRole().equalsIgnoreCase("Client")) {
+				profilesList = profileDetailsRepo.findAllBySelectedBy(user.getCompany());
+			} else if (null != user && null != user.getRole() && (user.getRole().equalsIgnoreCase("Recruiter"))) {
 				profilesList = profileDetailsRepo.findAllByManagedBy(user.getEmail());
-			}else if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Admin")) {
+			} else if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Admin")) {
 				profilesList = profileDetailsRepo.findAll();
 			}
-			
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -305,7 +304,7 @@ public class ProfileServiceImpl implements ProfileService {
 				}
 
 				profile.setJobProfile(jobProfile);
-				
+
 				if (null != profilePicture && !profilePicture.getOriginalFilename().equals("")) {
 					String profilePictureURL = uploadFileToS3(profilePicture, profile.getProfileId(), "pic.png");
 					profile.setProfilePic(profilePictureURL);
@@ -318,11 +317,11 @@ public class ProfileServiceImpl implements ProfileService {
 					String interviewVideoURL = uploadFileToS3(interviewVideo, profile.getProfileId(), "video");
 					profile.setVideoLink(interviewVideoURL);
 				}
-				if(null != profile.getSelectedBy() && profile.getSelectedBy().equalsIgnoreCase("")) {
+				if (null != profile.getSelectedBy() && profile.getSelectedBy().equalsIgnoreCase("")) {
 					profile.setSelectedBy(null);
 				}
 				profileDetailsRepo.save(profile);
-			}else {
+			} else {
 				profile = new ProfileDetails();
 			}
 		} catch (Exception e) {
@@ -347,7 +346,7 @@ public class ProfileServiceImpl implements ProfileService {
 						.build();
 
 				s3Client.putObject(putObjectRequest, tempFile);
-			}else {
+			} else {
 				awsS3URL = "";
 			}
 
@@ -359,81 +358,77 @@ public class ProfileServiceImpl implements ProfileService {
 		}
 		return awsS3URL;
 	}
-	
+
 	private List<String> listFiles(String bucketName) {
-        try {
-            ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder()
-                    .bucket(bucketName)
-                    .build();
-            
-            ListObjectsV2Response listObjectsResponse = s3Client.listObjectsV2(listObjectsRequest);
-            
-            return listObjectsResponse.contents().stream()
-                    .map(S3Object::key)
-                    .collect(Collectors.toList());
-        } catch (S3Exception e) {
-            System.err.println("Failed to list files: " + e.awsErrorDetails().errorMessage());
-            throw e;
-        }
-    }
-	
+		try {
+			ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder().bucket(bucketName).build();
+
+			ListObjectsV2Response listObjectsResponse = s3Client.listObjectsV2(listObjectsRequest);
+
+			return listObjectsResponse.contents().stream().map(S3Object::key).collect(Collectors.toList());
+		} catch (S3Exception e) {
+			System.err.println("Failed to list files: " + e.awsErrorDetails().errorMessage());
+			throw e;
+		}
+	}
+
 	@Override
 	public boolean editProfile(ProfileDetails profile, MultipartFile profilePicture, MultipartFile resume,
 			MultipartFile interviewVideo) {
 		boolean editStatus = false;
 		Long deleteStatus = 0L;
+		ProfileDetails profileDetails = null;
 		try {
+
+			DoubleStream doubleStream = DoubleStream.of(profile.getDataEngR(), profile.getCloudEngR(),
+					profile.getProgrammingR(), profile.getCommunicationR(), profile.getAttitudeR());
+			OptionalDouble res = doubleStream.average();
+			profile.setOverAllRating(res.getAsDouble());
+
+			if (null == profile.getJobCategory()) {
+				profile.setJobCategory("fulltime");
+			}
+
+			Set<String> jobProfile = new HashSet<String>();
+			if (null != profile.getSummary()) {
+				List<String> skills = profile.getSummary().getSkills();
+				if (null != skills) {
+					skills.replaceAll(String::toUpperCase);
+					skills.replaceAll(String::trim);
+					jobProfile.addAll(skills);
+				}
+
+			}
+			if (null != profile.getDesignation()) {
+				jobProfile.add(profile.getDesignation().toUpperCase().trim());
+			}
+			if (null != profile.getFirstName() && null != profile.getLastName()) {
+				jobProfile.add(profile.getFirstName().toUpperCase().trim());
+				jobProfile.add(profile.getLastName().toUpperCase().trim());
+
+			}
+
+			profile.setJobProfile(jobProfile);
+
+			if (null != profilePicture && !profilePicture.getOriginalFilename().equals("")) {
+				String profilePictureURL = uploadFileToS3(profilePicture, profile.getProfileId(), "pic.png");
+				profile.setProfilePic(profilePictureURL);
+			}
+			if (null != resume && !resume.getOriginalFilename().equals("")) {
+				String resumeURL = uploadFileToS3(resume, profile.getProfileId(), "resume.pdf");
+				profile.setResumeLink(resumeURL);
+			}
+			if (null != interviewVideo && !interviewVideo.getOriginalFilename().equals("")) {
+				String interviewVideoURL = uploadFileToS3(interviewVideo, profile.getProfileId(), "video");
+				profile.setVideoLink(interviewVideoURL);
+			}
+
 			deleteStatus = profileDetailsRepo.deleteByProfileId(profile.getProfileId());
 			if (!deleteStatus.equals(0)) {
-				DoubleStream doubleStream = DoubleStream.of(profile.getDataEngR(), profile.getCloudEngR(),
-						profile.getProgrammingR(), profile.getCommunicationR(), profile.getAttitudeR());
-				OptionalDouble res = doubleStream.average();
-				profile.setOverAllRating(res.getAsDouble());
-				
-				if (null == profile.getJobCategory()) {
-					profile.setJobCategory("fulltime");
-				}
-
-				Set<String> jobProfile = new HashSet<String>();
-				if (null != profile.getSummary()) {
-					List<String> skills = profile.getSummary().getSkills();
-					if (null != skills) {
-						skills.replaceAll(String::toUpperCase);
-						skills.replaceAll(String::trim);
-						jobProfile.addAll(skills);
-					}
-
-				}
-				if (null != profile.getDesignation()) {
-					jobProfile.add(profile.getDesignation().toUpperCase().trim());
-				}
-				if (null != profile.getFirstName() && null != profile.getLastName()) {
-					jobProfile.add(profile.getFirstName().toUpperCase().trim());
-					jobProfile.add(profile.getLastName().toUpperCase().trim());
-
-				}
-
-				profile.setJobProfile(jobProfile);
-				
-				if (null != profilePicture && !profilePicture.getOriginalFilename().equals("")) {
-					String profilePictureURL = uploadFileToS3(profilePicture, profile.getProfileId(), "pic.png");
-					profile.setProfilePic(profilePictureURL);
-				}
-				if (null != resume && !resume.getOriginalFilename().equals("")) {
-					String resumeURL = uploadFileToS3(resume, profile.getProfileId(), "resume.pdf");
-					profile.setResumeLink(resumeURL);
-				}
-				if (null != interviewVideo && !interviewVideo.getOriginalFilename().equals("")) {
-					String interviewVideoURL = uploadFileToS3(interviewVideo, profile.getProfileId(), "video");
-					profile.setVideoLink(interviewVideoURL);
-				}
-
-				
-				//------------------------------------
-				ProfileDetails profileDetails = profileDetailsRepo.save(profile);
-				if (null != profileDetails) {
-					editStatus = true;
-				}
+				profileDetails = profileDetailsRepo.save(profile);
+			}
+			if (null != profileDetails) {
+				editStatus = true;
 			}
 
 		} catch (Exception e) {
