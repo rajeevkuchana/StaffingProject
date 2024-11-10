@@ -16,7 +16,7 @@ public interface ProfileService {
 
 	public ProfileDetails getProfileByProfileId(String id);
 
-	public List<ProfileDetails> getProfilesClientSelected(String email);
+	public List<ProfileDetails> getProfilesSelected(String email);
 
 	public ProfileDetails addProfile(ProfileDetails profile, MultipartFile profilePicture, MultipartFile resume, MultipartFile interviewVideo);
 

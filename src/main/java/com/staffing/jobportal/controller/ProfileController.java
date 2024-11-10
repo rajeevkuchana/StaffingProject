@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.staffing.jobportal.models.JobDescription;
 import com.staffing.jobportal.models.JobProfiles;
 import com.staffing.jobportal.models.ProfileDetails;
@@ -33,7 +34,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@CrossOrigin(origins = { "http://localhost:3000", "http://3.81.66.16:3000" }, methods = { RequestMethod.OPTIONS,
+@CrossOrigin(origins = { "http://localhost:3000", "http://3.81.66.16:3000", "https://portal.quantlytixsolutions.com" }, methods = { RequestMethod.OPTIONS,
 		RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.POST })
 @RestController
 @RequestMapping("/profiles")
@@ -82,8 +83,8 @@ public class ProfileController {
 			@RequestParam("profilePicture") MultipartFile profilePicture, @RequestParam("resume") MultipartFile resume,
 			@RequestParam("interviewVideo") MultipartFile interviewVideo) {
 		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
 		ProfileDetails profile;
-		ProfileDetails editProfile = null;
 		boolean editStatus = false;
 		try {
 			profile = objectMapper.readValue(jsonData, ProfileDetails.class);
@@ -167,11 +168,11 @@ public class ProfileController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(addStatus);
 	}
 
-	@GetMapping("/clientSelected")
+	@GetMapping("/selected")
 	@ApiOperation("Get profiles with selected status by client")
 	public List<ProfileDetails> getProfilesClientSelected(
 			@ApiParam(value = "email", required = true) @RequestParam(value = "email") String email) {
-		List<ProfileDetails> profileList = profileService.getProfilesClientSelected(email);
+		List<ProfileDetails> profileList = profileService.getProfilesSelected(email);
 		return profileList;
 	}
 

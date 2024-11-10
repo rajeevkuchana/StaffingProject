@@ -63,11 +63,11 @@ public class ProfileServiceImpl implements ProfileService {
 	@Value("${aws.region}")
 	private String region;
 
-	@Value("${aws.accessKeyId}")
-	private String accessKeyId;
+	//@Value("${aws.accessKeyId}")
+	//private String accessKeyId;
 
-	@Value("${aws.secretAccessKey}")
-	private String secretAccessKey;
+	//@Value("${aws.secretAccessKey}")
+	//private String secretAccessKey;
 
 	@Override
 	public List<ProfileSummary> getAllProfiles(SearchJob searchJob) {
@@ -246,14 +246,21 @@ public class ProfileServiceImpl implements ProfileService {
 	}
 
 	@Override
-	public List<ProfileDetails> getProfilesClientSelected(String selectedBy) {
+	public List<ProfileDetails> getProfilesSelected(String selectedBy) {
 		List<ProfileDetails> profilesList = new ArrayList<ProfileDetails>();
 		User user = null;
 		try {
 			user = userRepository.findByEmail(selectedBy);
-			if (null != user && null != user.getCompany()) {
-				profilesList = profileDetailsRepo.findAllBySelectedBy(user.getCompany());
+			
+			if (null != user && null != user.getRole() && null != user.getCompany() && user.getRole().equalsIgnoreCase("Client")) {
+					profilesList = profileDetailsRepo.findAllBySelectedBy(user.getCompany());
+			}else if (null != user && null != user.getRole() && (user.getRole().equalsIgnoreCase("Recruiter"))) {
+				profilesList = profileDetailsRepo.findAllByManagedBy(user.getEmail());
+			}else if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Admin")) {
+				profilesList = profileDetailsRepo.findAll();
 			}
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -311,7 +318,9 @@ public class ProfileServiceImpl implements ProfileService {
 					String interviewVideoURL = uploadFileToS3(interviewVideo, profile.getProfileId(), "video");
 					profile.setVideoLink(interviewVideoURL);
 				}
-
+				if(null != profile.getSelectedBy() && profile.getSelectedBy().equalsIgnoreCase("")) {
+					profile.setSelectedBy(null);
+				}
 				profileDetailsRepo.save(profile);
 			}
 		} catch (Exception e) {
