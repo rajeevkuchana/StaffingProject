@@ -522,12 +522,13 @@ public class ProfileServiceImpl implements ProfileService {
 		try {
 			jobDescriptionAlready = jobDescriptionRepo.findByCategory(jobDescription.getJobCategory(),
 					jobDescription.getJobCategoryCode());
-			jobDescriptionRepo.deleteById(jobDescriptionAlready.getId());
 			if (null != jobDescriptionAlready) {
-				jobDescription.setId(UUID.randomUUID() + "");
-				jobDescription = jobDescriptionRepo.save(jobDescription);
-				addStatus = true;
+				jobDescriptionRepo.deleteById(jobDescriptionAlready.getId());
 			}
+			jobDescription.setId(UUID.randomUUID() + "");
+			jobDescription = jobDescriptionRepo.save(jobDescription);
+			addStatus = true;
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
