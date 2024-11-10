@@ -518,10 +518,16 @@ public class ProfileServiceImpl implements ProfileService {
 	@Override
 	public boolean addJobDescription(JobDescription jobDescription) {
 		boolean addStatus = false;
+		JobDescription jobDescriptionAlready = null;
 		try {
-			jobDescription.setId(UUID.randomUUID() + "");
-			jobDescription = jobDescriptionRepo.save(jobDescription);
-			addStatus = true;
+			jobDescriptionAlready = jobDescriptionRepo.findByCategory(jobDescription.getJobCategory(),
+					jobDescription.getJobCategoryCode());
+			jobDescriptionRepo.deleteById(jobDescriptionAlready.getId());
+			if (null != jobDescriptionAlready) {
+				jobDescription.setId(UUID.randomUUID() + "");
+				jobDescription = jobDescriptionRepo.save(jobDescription);
+				addStatus = true;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
