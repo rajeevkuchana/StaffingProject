@@ -61,8 +61,8 @@ public interface ProfileDetailsRepo extends MongoRepository<ProfileDetails, Stri
 	List<ProfileDetails> findAllByJobCatCli(String email, int startExp, int endExp,
 			int budget) throws JsonParseException;
 	
-	@Query("{managedBy: ?0, selectedBy : { $ne : null }")
-	List<ProfileDetails> findAllByManagedBy(String managedBy);
+	@Query("{managedBy: ?0, selectedBy : { $ne : null }}")
+	List<ProfileDetails> findAllSelected(String managedBy);
 	
 	List<ProfileDetails> findAll();
 	

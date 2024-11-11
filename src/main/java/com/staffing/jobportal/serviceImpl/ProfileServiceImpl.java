@@ -255,7 +255,7 @@ public class ProfileServiceImpl implements ProfileService {
 					&& user.getRole().equalsIgnoreCase("Client")) {
 				profilesList = profileDetailsRepo.findAllBySelectedBy(user.getCompany());
 			} else if (null != user && null != user.getRole() && (user.getRole().equalsIgnoreCase("Recruiter"))) {
-				profilesList = profileDetailsRepo.findAllByManagedBy(user.getEmail());
+				profilesList = profileDetailsRepo.findAllSelected(user.getEmail());
 			} else if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Admin")) {
 				profilesList = profileDetailsRepo.findAll();
 			}
