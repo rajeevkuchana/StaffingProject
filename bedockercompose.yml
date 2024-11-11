@@ -1,0 +1,9 @@
+version: "3"
+services:
+  BE:
+    image: beapplication:latest
+    container_name: BE
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /mnt/logs:/app/logs
