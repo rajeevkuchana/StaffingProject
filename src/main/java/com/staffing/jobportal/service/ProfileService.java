@@ -32,7 +32,7 @@ public interface ProfileService {
 	
 	public boolean updateJobProfiles(JobProfiles jobProfiles);
 	
-	public boolean deleteJobProfiles(String categoryCode);
+	public boolean deleteJobProfiles(String jobCategory, String categoryCode);
 	
 	public boolean addJobDescription(JobDescription jobDescription);
 	

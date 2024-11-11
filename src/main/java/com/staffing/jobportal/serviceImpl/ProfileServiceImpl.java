@@ -568,10 +568,10 @@ public class ProfileServiceImpl implements ProfileService {
 	}
 
 	@Override
-	public boolean deleteJobProfiles(String categoryCode) {
+	public boolean deleteJobProfiles(String jobCategory, String categoryCode) {
 		boolean deleteStatus = false;
 		try {
-			JobProfiles jobProfilesDelete = jobProfileRepo.findByCategoryCode(categoryCode);
+			JobProfiles jobProfilesDelete = jobProfileRepo.findByCategoryCode(jobCategory, categoryCode);
 			jobProfileRepo.deleteById(jobProfilesDelete.getId());
 			deleteStatus = true;
 		} catch (Exception e) {

@@ -163,8 +163,9 @@ public class ProfileController {
 	@DeleteMapping("/delete/jobProfile")
 	@ApiOperation("Get a profile by ID")
 	public ResponseEntity<Boolean> deleteJobProfiles(
-			@ApiParam(value = "Job Profile", example = "1", required = true) @RequestParam String categoryCode) {
-		boolean addStatus = profileService.deleteJobProfiles(categoryCode);
+			@ApiParam(value = "Job Profile", example = "1", required = true) @RequestParam String jobCategory,
+			@RequestParam String categoryCode) {
+		boolean addStatus = profileService.deleteJobProfiles(jobCategory, categoryCode);
 		return ResponseEntity.status(HttpStatus.CREATED).body(addStatus);
 	}
 
