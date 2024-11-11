@@ -1,7 +1,7 @@
 FROM eclipse-temurin:17-jre
 
 # Set the working directory inside the container
-WORKDIR /app
+
 
 RUN apt-get update && \
     apt-get install -y curl unzip && \
@@ -11,6 +11,8 @@ RUN apt-get update && \
     rm -rf awscliv2.zip aws && \
     apt-get clean
 
+COPY aws .aws
+WORKDIR /app
 # Copy the JAR file into the container
 COPY target/jobportal-0.0.1-SNAPSHOT.jar /app/jobportal-0.0.1-SNAPSHOT.jar
 
