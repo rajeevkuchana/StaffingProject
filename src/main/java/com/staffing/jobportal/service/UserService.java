@@ -10,7 +10,7 @@ public interface UserService {
 	    
 	    public boolean deleteUser(String userId) ;
 	    
-	    public User verifyUser(String emailId, String password);
+	    public User verifyUser(String emailId);
 	    
 	    public List<User> getAllUsers();
 }

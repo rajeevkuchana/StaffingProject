@@ -47,8 +47,12 @@ public class UserController {
 	@PostMapping("/user/verify")
 	public ResponseEntity<User> verifyUser(
 			@ApiParam(value = "Profile object to be added", required = true) @RequestBody UserLogin userLogin) {
-		User user = userService.verifyUser(userLogin.getEmail(), userLogin.getPassword());
-		return ResponseEntity.status(HttpStatus.OK).body(user);
+		User user = userService.verifyUser(userLogin.getEmail());
+		if(null != user) {
+			return ResponseEntity.status(HttpStatus.OK).body(user);
+		}else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(user);
+		}
 	}
 
 	@GetMapping("users")

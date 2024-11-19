@@ -50,11 +50,11 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-	public User verifyUser(String emailId, String password) {
+	public User verifyUser(String emailId) {
 		
 		User user = null;
 		try {
-			user = userRepository.findByEmail(emailId, password);
+			user = userRepository.findByEmail(emailId);
 	
 		} catch (Exception e) {
 			e.printStackTrace();
