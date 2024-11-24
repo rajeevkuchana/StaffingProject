@@ -314,7 +314,7 @@ public class ProfileServiceImpl implements ProfileService {
 					profile.setResumeLink(resumeURL);
 				}
 				if (null != interviewVideo && !interviewVideo.getOriginalFilename().equals("")) {
-					String interviewVideoURL = uploadFileToS3(interviewVideo, profile.getProfileId(), "video");
+					String interviewVideoURL = uploadFileToS3(interviewVideo, profile.getProfileId(), "video.mp4");
 					profile.setVideoLink(interviewVideoURL);
 				}
 				if (null != profile.getSelectedBy() && profile.getSelectedBy().equalsIgnoreCase("")) {
@@ -339,13 +339,25 @@ public class ProfileServiceImpl implements ProfileService {
 			filesList = listFiles(bucketName);
 			if (!filesList.contains(awsS3URL)) {
 
-				Path tempFile = Files.createTempFile(null, null);
-				file.transferTo(tempFile);
+				Thread backgroundThread = new Thread(() -> {
+					try {
+						Path tempFile = Files.createTempFile(null, null);
+						file.transferTo(tempFile);
 
-				PutObjectRequest putObjectRequest = PutObjectRequest.builder().bucket(bucketName).key(uniqueFileName)
-						.build();
+						PutObjectRequest putObjectRequest = PutObjectRequest.builder().bucket(bucketName)
+								.key(uniqueFileName).build();
 
-				s3Client.putObject(putObjectRequest, tempFile);
+						s3Client.putObject(putObjectRequest, tempFile);
+					} catch (IOException ioe) {
+						ioe.printStackTrace();
+					}
+
+				});
+
+				// backgroundThread.setDaemon(true); // Optional: Use daemon if thread should
+				// stop when main exits
+				backgroundThread.start();
+
 			} else {
 				awsS3URL = "";
 			}
@@ -353,8 +365,6 @@ public class ProfileServiceImpl implements ProfileService {
 		} catch (S3Exception s3E) {
 
 			return "Error uploading file: " + s3E.getMessage();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
 		}
 		return awsS3URL;
 	}
