@@ -1,6 +1,6 @@
 package com.staffing.jobportal.models;
 
-//Profile.java
+
 public class ProfileSummary {
 
 	private String profileId;
@@ -21,6 +21,8 @@ public class ProfileSummary {
 	private String phone;
 	private String email;
 	private String matchPer;
+	private String interviewDateTime;
+	private int noticePeriod;
 	
 	
 	public String getMatchPer() {
@@ -166,5 +168,22 @@ public class ProfileSummary {
 	public void setOverAllRating(double overAllRating) {
 		this.overAllRating = overAllRating;
 	}
+
+	public String getInterviewDateTime() {
+		return interviewDateTime;
+	}
+
+	public void setInterviewDateTime(String interviewDateTime) {
+		this.interviewDateTime = interviewDateTime;
+	}
+
+	public int getNoticePeriod() {
+		return noticePeriod;
+	}
+
+	public void setNoticePeriod(int noticePeriod) {
+		this.noticePeriod = noticePeriod;
+	}
+
 
 }

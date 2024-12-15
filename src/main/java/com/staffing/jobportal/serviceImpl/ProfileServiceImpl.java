@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -73,7 +74,7 @@ public class ProfileServiceImpl implements ProfileService {
 	public List<ProfileSummary> getAllProfiles(SearchJob searchJob) {
 
 		List<ProfileSummary> profileSummaryList = new ArrayList<>();
-
+		
 		List<ProfileDetails> profiles = null;
 		String email = searchJob.getEmail();
 		User user = null;
@@ -146,7 +147,12 @@ public class ProfileServiceImpl implements ProfileService {
 					profilSummary.setRelevantExp(profileDetails.getRelevantExp());
 					profilSummary.setOverAllRating(profileDetails.getOverAllRating());
 					profilSummary.setMatchPer(profileDetails.getMatchPer());
-
+					profilSummary.setNoticePeriod(profileDetails.getNoticePeriod());
+					if(null != profileDetails.getInterviewDateTime()) {
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+				        String formattedDate = profileDetails.getInterviewDateTime().format(formatter);
+						profilSummary.setInterviewDateTime(formattedDate);
+					}
 					profileSummaryList.add(profilSummary);
 				}
 			} else if (null != user && null != user.getRole() && (user.getRole().equalsIgnoreCase("Recruiter"))) {
@@ -199,6 +205,12 @@ public class ProfileServiceImpl implements ProfileService {
 					profilSummary.setOverAllRating(profileDetails.getOverAllRating());
 					profilSummary.setJobCategory(profileDetails.getJobCategory());
 					profilSummary.setSelectedBy(profileDetails.getSelectedBy());
+					profilSummary.setMatchPer(profileDetails.getMatchPer());
+					if(null != profileDetails.getInterviewDateTime()) {
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+				        String formattedDate = profileDetails.getInterviewDateTime().format(formatter);
+						profilSummary.setInterviewDateTime(formattedDate);
+					}
 					profileSummaryList.add(profilSummary);
 				}
 			} else if (null != user && null != user.getRole() && user.getRole().equalsIgnoreCase("Admin")) {
@@ -222,6 +234,12 @@ public class ProfileServiceImpl implements ProfileService {
 					profilSummary.setOverAllRating(profileDetails.getOverAllRating());
 					profilSummary.setJobCategory(profileDetails.getJobCategory());
 					profilSummary.setSelectedBy(profileDetails.getSelectedBy());
+					profilSummary.setMatchPer(profileDetails.getMatchPer());
+					if(null != profileDetails.getInterviewDateTime()) {
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+				        String formattedDate = profileDetails.getInterviewDateTime().format(formatter);
+						profilSummary.setInterviewDateTime(formattedDate);
+					}
 					profileSummaryList.add(profilSummary);
 				}
 			}
@@ -304,7 +322,7 @@ public class ProfileServiceImpl implements ProfileService {
 				}
 
 				profile.setJobProfile(jobProfile);
-
+				profile.setInterviewDateTime(LocalDateTime.now());
 				if (null != profilePicture && !profilePicture.getOriginalFilename().equals("")) {
 					String profilePictureURL = uploadFileToS3(profilePicture, profile.getProfileId(), "pic.png");
 					profile.setProfilePic(profilePictureURL);
@@ -545,24 +563,23 @@ public class ProfileServiceImpl implements ProfileService {
 		return addStatus;
 	}
 
-	/*
-	 * private void CustomeChanges() {
-	 * 
-	 * List<ProfileDetails> profilesTest = profileDetailsRepo.findAll();
-	 * 
-	 * Iterator<ProfileDetails> itr = profilesTest.iterator(); int count = 0;
-	 * while(itr.hasNext()) { System.out.println("Count :: " + count);
-	 * ProfileDetails details = itr.next(); Set<String> jobProfile =
-	 * details.getJobProfile(); Iterator<String> itrJP = jobProfile.iterator();
-	 * Set<String> tempJobProfile = new HashSet<String>(); while(itrJP.hasNext()) {
-	 * String jp = itrJP.next(); tempJobProfile.add(jp.trim()); }
-	 * 
-	 * details.setJobProfile(tempJobProfile);
-	 * 
-	 * profileDetailsRepo.deleteByProfileId(details.getProfileId());
-	 * profileDetailsRepo.save(details); count++; } System.out.println("Completed");
-	 * }
-	 */
+	
+	/*private void CustomeChanges() {
+		List<ProfileDetails> profilesTest = profileDetailsRepo.findAll();
+
+		Iterator<ProfileDetails> itr = profilesTest.iterator();
+		int count = 0;
+		while (itr.hasNext()) {
+			System.out.println("Count :: " + count);
+			ProfileDetails details = itr.next();
+			if(details.getInterviewDateTime() == null) {
+				jobProfileRepo.deleteById(details.getProfileId());
+			}
+			count++;
+		}
+		System.out.println("Completed");
+	}*/
+	 
 
 	@Override
 	public boolean updateJobProfiles(JobProfiles jobProfiles) {
