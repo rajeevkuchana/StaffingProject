@@ -14,7 +14,8 @@ public interface UserRepo extends MongoRepository<User, String>{
 	@Query("{email: ?0}")
 	User findByEmail(String email,String password);
 	
-	User findByEmail(String email);
+	@Query("{'email': { $regex: ?0, $options: 'i' }}")
+    User findByEmail(String email);
 	
 	void deleteById(String id);
 
