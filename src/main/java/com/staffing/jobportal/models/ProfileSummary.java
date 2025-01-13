@@ -10,10 +10,10 @@ public class ProfileSummary {
 	private String designation;
 	private String location;
 	private String profilePic;
-	private int currentCTC;
-	private int expectedCTC;
-	private int overallExp;
-	private int relevantExp;
+	private double currentCTC;
+	private double expectedCTC;
+	private double overallExp;
+	private double relevantExp;
 	private double overAllRating;
 	private String jobCategory;
 	private String company;
@@ -129,35 +129,35 @@ public class ProfileSummary {
 		this.profilePic = profilePic;
 	}
 
-	public int getCurrentCTC() {
+	public double getCurrentCTC() {
 		return currentCTC;
 	}
 
-	public void setCurrentCTC(int currentCTC) {
+	public void setCurrentCTC(double currentCTC) {
 		this.currentCTC = currentCTC;
 	}
 
-	public int getExpectedCTC() {
+	public double getExpectedCTC() {
 		return expectedCTC;
 	}
 
-	public void setExpectedCTC(int expectedCTC) {
+	public void setExpectedCTC(double expectedCTC) {
 		this.expectedCTC = expectedCTC;
 	}
 
-	public int getOverallExp() {
+	public double getOverallExp() {
 		return overallExp;
 	}
 
-	public void setOverallExp(int overallExp) {
+	public void setOverallExp(double overallExp) {
 		this.overallExp = overallExp;
 	}
 
-	public int getRelevantExp() {
+	public double getRelevantExp() {
 		return relevantExp;
 	}
 
-	public void setRelevantExp(int relevantExp) {
+	public void setRelevantExp(double relevantExp) {
 		this.relevantExp = relevantExp;
 	}
 

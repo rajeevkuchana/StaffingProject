@@ -23,10 +23,10 @@ public class ProfileDetails {
 	private String location;
 	private String profilePic;
 	private String currentCompany;
-	private int expectedCTC;
-	private int currentCTC;
-	private int overallExp;
-	private int relevantExp;
+	private double expectedCTC;
+	private double currentCTC;
+	private double overallExp;
+	private double relevantExp;
 	private String designation;
 	private Summary summary;
 	private List<String> certificationList;
@@ -50,8 +50,15 @@ public class ProfileDetails {
 	private int noticePeriod;
 	private LocalDateTime selectedDateTime;
 	private String matchPer;
+	private List<String> skills;
 	
 	
+	public List<String> getSkills() {
+		return skills;
+	}
+	public void setSkills(List<String> skills) {
+		this.skills = skills;
+	}
 	public String getMatchPer() {
 		return matchPer;
 	}
@@ -124,28 +131,29 @@ public class ProfileDetails {
 	public void setCurrentCompany(String currentCompany) {
 		this.currentCompany = currentCompany;
 	}
-	public int getExpectedCTC() {
+
+	public double getExpectedCTC() {
 		return expectedCTC;
 	}
-	public void setExpectedCTC(int expectedCTC) {
+	public void setExpectedCTC(double expectedCTC) {
 		this.expectedCTC = expectedCTC;
 	}
-	public int getCurrentCTC() {
+	public double getCurrentCTC() {
 		return currentCTC;
 	}
-	public void setCurrentCTC(int currentCTC) {
+	public void setCurrentCTC(double currentCTC) {
 		this.currentCTC = currentCTC;
 	}
-	public int getOverallExp() {
+	public double getOverallExp() {
 		return overallExp;
 	}
-	public void setOverallExp(int overallExp) {
+	public void setOverallExp(double overallExp) {
 		this.overallExp = overallExp;
 	}
-	public int getRelevantExp() {
+	public double getRelevantExp() {
 		return relevantExp;
 	}
-	public void setRelevantExp(int relevantExp) {
+	public void setRelevantExp(double relevantExp) {
 		this.relevantExp = relevantExp;
 	}
 	public String getDesignation() {

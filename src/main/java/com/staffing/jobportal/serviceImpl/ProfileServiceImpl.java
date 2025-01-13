@@ -74,7 +74,7 @@ public class ProfileServiceImpl implements ProfileService {
 	public List<ProfileSummary> getAllProfiles(SearchJob searchJob) {
 
 		List<ProfileSummary> profileSummaryList = new ArrayList<>();
-		
+
 		List<ProfileDetails> profiles = null;
 		String email = searchJob.getEmail();
 		User user = null;
@@ -304,7 +304,7 @@ public class ProfileServiceImpl implements ProfileService {
 
 				Set<String> jobProfile = new HashSet<String>();
 				if (null != profile.getSummary()) {
-					List<String> skills = profile.getSummary().getSkills();
+					List<String> skills = profile.getSkills();
 					if (null != skills) {
 						skills.replaceAll(String::toUpperCase);
 						skills.replaceAll(String::trim);
@@ -419,7 +419,7 @@ public class ProfileServiceImpl implements ProfileService {
 
 			Set<String> jobProfile = new HashSet<String>();
 			if (null != profile.getSummary()) {
-				List<String> skills = profile.getSummary().getSkills();
+				List<String> skills = profile.getSkills();
 				if (null != skills) {
 					skills.replaceAll(String::toUpperCase);
 					skills.replaceAll(String::trim);
@@ -572,8 +572,13 @@ public class ProfileServiceImpl implements ProfileService {
 		while (itr.hasNext()) {
 			System.out.println("Count :: " + count);
 			ProfileDetails details = itr.next();
-			if(details.getInterviewDateTime() == null) {
-				jobProfileRepo.deleteById(details.getProfileId());
+			if(null != details && null != details.getSummary()) {
+				if(null == details.getSummary().getSkills()) {
+					details.setSkills(new ArrayList<String>());
+				}
+				details.setSkills(details.getSummary().getSkills());
+				profileDetailsRepo.deleteByProfileId(details.getProfileId());
+				profileDetailsRepo.save(details);
 			}
 			count++;
 		}
